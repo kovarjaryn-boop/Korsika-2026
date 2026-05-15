@@ -33,6 +33,24 @@
     </style>
 </head>
 <body class="text-slate-100">
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-xl">
+        <div class="glass p-10 w-full max-w-md text-center border-sky-500/30">
+            <div class="text-6xl mb-6">🏝️</div>
+            <h2 class="text-3xl font-bold mb-2">Korsika 2026</h2>
+            <p class="opacity-60 mb-8 text-sm">Pro přístup zadej společné heslo</p>
+            
+            <input type="password" id="pwInput" placeholder="Heslo..." 
+                class="w-full p-4 rounded-2xl mb-4 text-center text-2xl tracking-widest focus:ring-2 focus:ring-sky-500 outline-none transition-all">
+            
+            <button onclick="checkPassword()" 
+                class="w-full bg-sky-600 hover:bg-sky-500 p-4 rounded-2xl font-bold text-lg transition-colors shadow-lg">
+                VSTOUPIT
+            </button>
+            <p id="loginError" class="text-rose-400 mt-4 text-sm font-medium hidden">⚠️ Nesprávné heslo!</p>
+        </div>
+    </div>
+
     <div class="hero-bg"></div>
 
     <button id="homeBtn" onclick="showSection('mainDashboard')" class="fixed top-6 right-6 z-50 glass p-4 rounded-full hover:bg-white/20 transition-all hidden shadow-lg border border-white/20 group">
@@ -247,231 +265,42 @@
 
     <script>
         let currentSection = 'mainDashboard';
-        let dataStore = {
-            itiRouteTransit: [], itiRouteOnSite: [], itiFerry: [],
-            accRoute: [], accCamp1: [], accCamp2: [], jidelnicek: [],
-            shop: [], notes: [],
-            auto1: [], auto2: [], auto3: [],
-            duties1: [
-                {id: 1, text: "Dálniční známka", done: false},
-                {id: 2, text: "Pojištění", done: false},
-                {id: 3, text: "Technická prohlídka", done: false}
-            ],
-            duties2: [
-                {id: 4, text: "Dálniční známka", done: false},
-                {id: 5, text: "Pojištění", done: false},
-                {id: 6, text: "Technická prohlídka", done: false}
-            ],
-            duties3: [
-                {id: 7, text: "Dálniční známka", done: false},
-                {id: 8, text: "Pojištění", done: false},
-                {id: 9, text: "Technická prohlídka", done: false}
-            ]
-        };
+        // ... existing dataStore definitions ...
 
         window.onload = function() {
-            // Generate Food Calendar 18.7. - 2.8.
-            const start = new Date(2026, 6, 18);
-            for(let i=0; i<16; i++) {
-                const d = new Date(start);
-                d.setDate(start.getDate() + i);
-                dataStore.jidelnicek.push({
-                    id: Date.now() + i,
-                    date: d.toISOString().split('T')[0],
-                    place: i === 0 ? "Odjezd (Kvasiny)" : (i === 15 ? "Dojezd (Kvasiny)" : "Plánování jídla"),
-                    author: "Mentor", note: ""
-                });
+            // Check authentication
+            if (localStorage.getItem('korsika_auth') === 'true') {
+                document.getElementById('loginOverlay').classList.add('hidden');
             }
+
+            // Generate Food Calendar 18.7. - 2.8.
+            // ... existing food calendar logic ...
         };
 
+        function checkPassword() {
+            const input = document.getElementById('pwInput').value;
+            const error = document.getElementById('loginError');
+            
+            if (input === '2026') {
+                localStorage.setItem('korsika_auth', 'true');
+                document.getElementById('loginOverlay').classList.add('hidden');
+                error.classList.add('hidden');
+            } else {
+                error.classList.remove('hidden');
+                document.getElementById('pwInput').value = '';
+                document.getElementById('pwInput').focus();
+            }
+        }
+
+        // Allow 'Enter' key for login
+        document.getElementById('pwInput')?.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+
         function showSection(id) {
-            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
-            const homeBtn = document.getElementById('homeBtn');
-            currentSection = id;
-
-            if (id === 'mainDashboard') {
-                homeBtn.classList.add('hidden');
-                document.getElementById('mainDashboard').classList.add('active');
-            } else {
-                homeBtn.classList.remove('hidden');
-                
-                const genericIds = ['itiRouteTransit', 'itiRouteOnSite', 'itiFerry', 'accRoute', 'accCamp1', 'accCamp2', 'jidelnicek'];
-                if (genericIds.includes(id)) {
-                    setupGenericView(id);
-                    document.getElementById('generalListView').classList.add('active');
-                } else if (['auto1', 'auto2', 'auto3'].includes(id)) {
-                    document.getElementById('carDetailView').classList.add('active');
-                    document.getElementById('carDetailView').dataset.currentAuto = id;
-                    document.getElementById('carTitle').innerText = id.toUpperCase().replace('AUTO', 'AUTO ');
-                    renderPassengers();
-                    renderDuties();
-                } else {
-                    document.getElementById(id).classList.add('active');
-                }
-            }
-            if (id === 'napady') renderNotes();
-            if (id === 'nakupy') renderShop();
+            // ... existing showSection code ...
         }
-
-        function setupGenericView(type) {
-            const titles = {
-                itiRouteTransit: ["🛣️ Trasa: Tam a zpět", "itiRouteSubmenu"],
-                itiRouteOnSite: ["⛰️ Trasa: Na místě", "itiRouteSubmenu"],
-                itiFerry: ["🚢 Trajekty", "itiSubmenu"],
-                accRoute: ["🏨 Ubytování: Na trase", "ubytovaniSubmenu"],
-                accCamp1: ["🏖️ Kemp 1", "accCampSubmenu"],
-                accCamp2: ["🌲 Kemp 2", "accCampSubmenu"],
-                jidelnicek: ["🍕 Jídelní lístek", "stravovaniSubmenu"]
-            };
-            document.getElementById('viewTitle').innerText = titles[type][0];
-            document.getElementById('backBtn').onclick = () => showSection(titles[type][1]);
-            document.getElementById('generalListView').dataset.type = type;
-            renderGenericList(type);
-        }
-
-        function toggleForm() { 
-            const form = document.getElementById('mainForm');
-            form.classList.toggle('hidden'); 
-            if (form.classList.contains('hidden')) form.reset();
-            document.getElementById('editId').value = ''; 
-        }
-        
-        function saveItem() {
-            const type = document.getElementById('generalListView').dataset.type;
-            const id = document.getElementById('editId').value;
-            const newItem = {
-                id: id ? parseInt(id) : Date.now(),
-                date: document.getElementById('formDate').value,
-                place: document.getElementById('formPlace').value,
-                gps: document.getElementById('formGPS').value,
-                web: document.getElementById('formWeb').value,
-                author: document.getElementById('formAuthor').value,
-                note: document.getElementById('formNote').value
-            };
-            if(id) {
-                const idx = dataStore[type].findIndex(x => x.id == id);
-                dataStore[type][idx] = newItem;
-            } else {
-                dataStore[type].push(newItem);
-            }
-            dataStore[type].sort((a,b) => new Date(a.date) - new Date(b.date));
-            renderGenericList(type);
-            document.getElementById('mainForm').reset();
-            document.getElementById('mainForm').classList.add('hidden');
-        }
-
-        function renderGenericList(type) {
-            const el = document.getElementById('mainList');
-            el.innerHTML = '';
-            dataStore[type].forEach((item, idx) => {
-                const card = document.createElement('div');
-                card.className = "glass p-6 flex flex-col md:flex-row gap-4 justify-between items-start";
-                card.innerHTML = `
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold">#${idx+1}</span>
-                            <span class="text-sky-400 font-bold">${item.date}</span>
-                        </div>
-                        <h3 class="text-2xl font-bold">${item.place}</h3>
-                        <p class="text-sm opacity-60 italic mt-1">Autor: ${item.author}</p>
-                        ${item.note ? `<p class="mt-3 text-sm bg-black/20 p-3 rounded-xl whitespace-pre-wrap border border-white/5">${item.note}</p>` : ''}
-                        <div class="flex flex-wrap gap-2 mt-4">
-                            ${item.gps ? `<a href="https://mapy.cz/zakladni?q=${item.gps}" target="_blank" class="bg-emerald-600 px-4 py-2 rounded-lg text-xs font-bold">📍 MAPY</a>` : ''}
-                            ${item.web ? `<a href="${item.web}" target="_blank" class="bg-sky-600 px-4 py-2 rounded-lg text-xs font-bold">🌐 WEB/BOOKING</a>` : ''}
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="editGenericItem('${type}', ${item.id})" class="p-3 bg-white/10 rounded-xl">✏️</button>
-                        <button onclick="deleteGenericItem('${type}', ${item.id})" class="p-3 bg-rose-500/20 rounded-xl text-rose-400">✕</button>
-                    </div>
-                `;
-                el.appendChild(card);
-            });
-        }
-
-        function deleteGenericItem(type, id) { dataStore[type] = dataStore[type].filter(x => x.id != id); renderGenericList(type); }
-        
-        function editGenericItem(type, id) {
-            const item = dataStore[type].find(x => x.id == id);
-            document.getElementById('editId').value = item.id;
-            document.getElementById('formDate').value = item.date;
-            document.getElementById('formPlace').value = item.place;
-            document.getElementById('formGPS').value = item.gps;
-            document.getElementById('formWeb').value = item.web;
-            document.getElementById('formAuthor').value = item.author;
-            document.getElementById('formNote').value = item.note;
-            document.getElementById('mainForm').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function addPassenger() {
-            const input = document.getElementById('passengerInput');
-            const autoId = document.getElementById('carDetailView').dataset.currentAuto;
-            if(!input.value) return;
-            dataStore[autoId].push({ id: Date.now(), name: input.value, done: false });
-            input.value = ''; renderPassengers();
-        }
-        
-        function deletePassenger(autoId, id) { dataStore[autoId] = dataStore[autoId].filter(p => p.id != id); renderPassengers(); }
-        function togglePassenger(autoId, id) { const p = dataStore[autoId].find(x => x.id == id); p.done = !p.done; renderPassengers(); }
-        
-        function renderPassengers() {
-            const autoId = document.getElementById('carDetailView').dataset.currentAuto;
-            const el = document.getElementById('passengerList');
-            el.innerHTML = '';
-            dataStore[autoId].forEach(p => {
-                const d = document.createElement('div');
-                d.className = `glass-card p-4 flex justify-between items-center rounded-xl ${p.done ? 'opacity-40' : ''}`;
-                d.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" ${p.done ? 'checked' : ''} onchange="togglePassenger('${autoId}', ${p.id})" class="w-5 h-5 accent-rose-500 cursor-pointer">
-                        <span class="${p.done ? 'line-through' : ''} font-bold">${p.name}</span>
-                    </div>
-                    <button onclick="deletePassenger('${autoId}', ${p.id})" class="text-rose-400 p-2">✕</button>
-                `;
-                el.appendChild(d);
-            });
-        }
-
-        function addDuty() {
-            const input = document.getElementById('dutyInput');
-            const autoNum = document.getElementById('carDetailView').dataset.currentAuto.slice(-1);
-            if(!input.value) return;
-            dataStore['duties' + autoNum].push({ id: Date.now(), text: input.value, done: false });
-            input.value = ''; renderDuties();
-        }
-        function toggleDuty(num, id) { const d = dataStore['duties'+num].find(x => x.id == id); d.done = !d.done; renderDuties(); }
-        function deleteDuty(num, id) { dataStore['duties'+num] = dataStore['duties'+num].filter(x => x.id != id); renderDuties(); }
-        
-        function renderDuties() {
-            const autoNum = document.getElementById('carDetailView').dataset.currentAuto.slice(-1);
-            const el = document.getElementById('dutyList');
-            el.innerHTML = '';
-            dataStore['duties' + autoNum].forEach(d => {
-                const div = document.createElement('div');
-                div.className = `flex justify-between items-center p-3 rounded-xl bg-black/20 ${d.done ? 'opacity-40' : ''}`;
-                div.innerHTML = `<div class="flex items-center gap-3"><input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleDuty(${autoNum}, ${d.id})" class="accent-emerald-500 cursor-pointer"> <span class="${d.done ? 'line-through' : ''}">${d.text}</span></div><button onclick="deleteDuty(${autoNum}, ${d.id})" class="text-white/20 p-2">✕</button>`;
-                el.appendChild(div);
-            });
-        }
-
-        function addShopItem() { const input = document.getElementById('shopInput'); if(!input.value) return; dataStore.shop.push({id: Date.now(), text: input.value, done: false}); input.value = ''; renderShop(); }
-        function toggleShop(id) { const i = dataStore.shop.find(x => x.id == id); i.done = !i.done; renderShop(); }
-        function renderShop() {
-            const el = document.getElementById('shopList'); el.innerHTML = '';
-            dataStore.shop.forEach(i => {
-                const d = document.createElement('div'); d.className = `glass-card p-4 flex gap-3 items-center ${i.done ? 'opacity-40' : ''}`;
-                d.innerHTML = `<input type="checkbox" ${i.done ? 'checked' : ''} onchange="toggleShop(${i.id})" class="cursor-pointer"> <span class="${i.done ? 'line-through' : ''}">${i.text}</span>`;
-                el.appendChild(d);
-            });
-        }
-        function addNote() { const input = document.getElementById('noteInput'); if(!input.value) return; dataStore.notes.push({id: Date.now(), text: input.value}); input.value = ''; renderNotes(); }
-        function renderNotes() {
-            const el = document.getElementById('notesList'); el.innerHTML = '';
-            dataStore.notes.forEach(n => {
-                const d = document.createElement('div'); d.className = "glass p-4"; d.innerText = n.text; el.appendChild(d);
-            });
-        }
+        // ... rest of the existing code ...
     </script>
 </body>
 </html>
