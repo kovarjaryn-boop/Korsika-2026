@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korsika 2026 | Mentor Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%; margin: 0; font-family: 'Inter', sans-serif;
+            overflow-x: hidden; background-color: #0f172a; scroll-behavior: smooth;
+        }
+        .hero-bg {
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), 
+                        url('https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease;
+        }
+        .glass-card:hover { background: rgba(255, 255, 255, 0.12); transform: translateY(-4px); }
+        .section-content { display: none; animation: fadeIn 0.4s ease-out forwards; }
+        .section-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        input, textarea, select { background: rgba(0, 0, 0, 0.4) !important; border: 1px solid rgba(255, 255, 255, 0.1) !important; color: white !important; }
+    </style>
+</head>
+<body class="text-slate-100">
+    <div class="hero-bg"></div>
+
+    <button id="homeBtn" onclick="showSection('mainDashboard')" class="fixed top-6 right-6 z-50 glass p-4 rounded-full hover:bg-white/20 transition-all hidden shadow-lg border border-white/20 group">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white group-hover:scale-110 transition-transform">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+    </button>
+
+    <div class="min-h-screen flex flex-col items-center p-4 md:p-8">
+        <!-- Main Dashboard -->
+        <div id="mainDashboard" class="w-full max-w-5xl mt-12 md:mt-20 active section-content">
+            <header class="text-center mb-12">
+                <h1 class="text-6xl md:text-8xl font-bold tracking-tighter drop-shadow-2xl mb-4">Korsika <span class="text-sky-400">2026</span></h1>
+                <p class="text-xl opacity-70 font-light tracking-widest uppercase">Mentor Dashboard</p>
+            </header>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <button onclick="showSection('itiSubmenu')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-sky-500/20">
+                    <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">📅</div>
+                    <h3 class="text-2xl font-bold text-sky-400">Vše k přepravě</h3>
+                    <p class="text-sm opacity-60 mt-2">18.7. – 2.8.2026</p>
+                </button>
+                <button onclick="showSection('ubytovaniSubmenu')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-emerald-500/20">
+                    <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🏠</div>
+                    <h3 class="text-2xl font-bold text-emerald-400">Ubytování</h3>
+                    <p class="text-sm opacity-60 mt-2">Na trase & Kempy</p>
+                </button>
+                <button onclick="showSection('stravovaniSubmenu')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-amber-500/20">
+                    <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🍽️</div>
+                    <h3 class="text-2xl font-bold text-amber-400">Stravování</h3>
+                    <p class="text-sm opacity-60 mt-2">Jídlo & Nákupy</p>
+                </button>
+                <button onclick="showSection('carsSubmenu')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-rose-500/20">
+                    <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🚗</div>
+                    <h3 class="text-2xl font-bold text-rose-400">AUTA</h3>
+                    <p class="text-sm opacity-60 mt-2">Posádky a povinnosti</p>
+                </button>
+                <button onclick="showSection('napady')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-white/10 lg:col-span-2">
+                    <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">💡</div>
+                    <h3 class="text-2xl font-bold text-white">Nápady & Poznámky</h3>
+                    <p class="text-sm opacity-60 mt-2">Zapište své tipy</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Submenus -->
+        <div id="itiSubmenu" class="w-full max-w-4xl section-content">
+            <div class="text-center mb-10"><h2 class="text-4xl font-bold text-sky-400">📅 Vše k přepravě</h2><p class="opacity-60">18. 7. – 2. 8. 2026</p></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <button onclick="showSection('itiRouteSubmenu')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🛣️</div>
+                    <h3 class="text-3xl font-bold">Trasa</h3>
+                </button>
+                <button onclick="showSection('itiFerry')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🚢</div>
+                    <h3 class="text-3xl font-bold">Trajekty</h3>
+                </button>
+            </div>
+        </div>
+
+        <div id="itiRouteSubmenu" class="w-full max-w-4xl section-content">
+            <div class="text-center mb-10"><h2 class="text-4xl font-bold">🛣️ Výběr trasy</h2></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <button onclick="showSection('itiRouteTransit')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🚗</div>
+                    <h3 class="text-2xl font-bold text-center">Korsika tam a zpět</h3>
+                </button>
+                <button onclick="showSection('itiRouteOnSite')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">⛰️</div>
+                    <h3 class="text-2xl font-bold text-center">Korsika na místě</h3>
+                </button>
+            </div>
+        </div>
+
+        <div id="ubytovaniSubmenu" class="w-full max-w-4xl section-content">
+            <div class="text-center mb-10"><h2 class="text-4xl font-bold text-emerald-400">🏠 Ubytování</h2></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <button onclick="showSection('accRoute')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🏨</div>
+                    <h3 class="text-2xl font-bold">Na trase</h3>
+                </button>
+                <button onclick="showSection('accCampSubmenu')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">⛺</div>
+                    <h3 class="text-2xl font-bold">V kempu</h3>
+                </button>
+            </div>
+        </div>
+
+        <div id="accCampSubmenu" class="w-full max-w-4xl section-content">
+            <div class="text-center mb-10"><h2 class="text-4xl font-bold text-emerald-400">⛺ Výběr kempu</h2></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <button onclick="showSection('accCamp1')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🏖️</div>
+                    <h3 class="text-2xl font-bold">Kemp 1</h3>
+                </button>
+                <button onclick="showSection('accCamp2')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🌲</div>
+                    <h3 class="text-2xl font-bold">Kemp 2</h3>
+                </button>
+            </div>
+        </div>
+
+        <div id="stravovaniSubmenu" class="w-full max-w-4xl section-content">
+            <div class="text-center mb-10"><h2 class="text-4xl font-bold text-amber-400">🍽️ Stravování</h2></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <button onclick="showSection('jidelnicek')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🍕</div>
+                    <h3 class="text-2xl font-bold">Jídelní lístek</h3>
+                </button>
+                <button onclick="showSection('nakupy')" class="glass p-12 flex flex-col items-center group">
+                    <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🛒</div>
+                    <h3 class="text-2xl font-bold">Nákupy</h3>
+                </button>
+            </div>
+        </div>
+
+        <div id="carsSubmenu" class="w-full max-w-4xl section-content">
+            <div class="text-center mb-10"><h2 class="text-4xl font-bold text-rose-400">🚗 Výběr auta</h2></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <button onclick="showSection('auto1')" class="glass p-10 flex flex-col items-center group">
+                    <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🏎️</div>
+                    <h3 class="text-2xl font-bold">AUTO 1</h3>
+                </button>
+                <button onclick="showSection('auto2')" class="glass p-10 flex flex-col items-center group">
+                    <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🚙</div>
+                    <h3 class="text-2xl font-bold">AUTO 2</h3>
+                </button>
+                <button onclick="showSection('auto3')" class="glass p-10 flex flex-col items-center group">
+                    <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🚐</div>
+                    <h3 class="text-2xl font-bold">AUTO 3</h3>
+                </button>
+            </div>
+        </div>
+
+        <!-- General List View -->
+        <div id="generalListView" class="w-full max-w-5xl section-content">
+            <div class="flex justify-between items-center mb-8">
+                <div><h2 id="viewTitle" class="text-4xl font-bold">Sekce</h2><p id="viewSubtitle" class="opacity-60">Položky</p></div>
+                <div class="flex gap-2">
+                    <button onclick="toggleForm()" class="bg-white/20 px-6 py-3 rounded-full font-bold">+ Přidat</button>
+                    <button id="backBtn" class="bg-white/10 px-6 py-3 rounded-full">Zpět</button>
+                </div>
+            </div>
+
+            <form id="mainForm" class="hidden glass p-6 mb-8" onsubmit="event.preventDefault(); saveItem();">
+                <input type="hidden" id="editId">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input type="date" id="formDate" class="p-3 rounded-xl">
+                    <input type="text" id="formPlace" placeholder="Místo / Název" class="p-3 rounded-xl">
+                    <input type="text" id="formGPS" placeholder="GPS (např. 41.38, 9.15)" class="p-3 rounded-xl">
+                    <input type="text" id="formWeb" placeholder="Web / Booking" class="p-3 rounded-xl">
+                    <input type="text" id="formAuthor" placeholder="Tvé jméno" class="p-3 rounded-xl">
+                    <textarea id="formNote" placeholder="Poznámky..." class="p-3 rounded-xl md:col-span-3 min-h-[80px]"></textarea>
+                    <div class="md:col-span-3 flex gap-3">
+                        <button type="submit" class="flex-1 bg-sky-500 p-3 rounded-xl font-bold">Uložit</button>
+                        <button type="button" onclick="toggleForm()" class="px-6 bg-white/10 rounded-xl">Zrušit</button>
+                    </div>
+                </div>
+            </form>
+            <div id="mainList" class="grid gap-4"></div>
+        </div>
+
+        <!-- Car Detail View -->
+        <div id="carDetailView" class="w-full max-w-2xl section-content">
+            <div class="flex justify-between items-center mb-8">
+                <h2 id="carTitle" class="text-4xl font-bold text-rose-400">AUTO 1</h2>
+                <button onclick="showSection('carsSubmenu')" class="bg-white/10 px-6 py-3 rounded-full">Zpět</button>
+            </div>
+            
+            <div class="glass p-6 mb-6">
+                <h3 class="text-xl font-bold mb-4">👥 Pasažéři</h3>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="passengerInput" placeholder="Jméno..." class="w-full rounded-xl px-4 py-3">
+                    <button onclick="addPassenger()" class="bg-rose-600 px-6 rounded-xl font-bold">PŘIDAT</button>
+                </div>
+                <div id="passengerList" class="grid gap-2"></div>
+            </div>
+
+            <div class="glass p-6">
+                <h3 class="text-xl font-bold mb-4">📋 Povinnosti</h3>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="dutyInput" placeholder="Povinnost..." class="w-full rounded-xl px-4 py-2 text-sm">
+                    <button onclick="addDuty()" class="bg-white/20 px-6 rounded-xl font-bold text-sm">PŘIDAT</button>
+                </div>
+                <div id="dutyList" class="grid gap-2 text-sm"></div>
+            </div>
+        </div>
+
+        <!-- Nakupy -->
+        <div id="nakupy" class="w-full max-w-2xl section-content">
+            <div class="flex justify-between items-center mb-8"><h2 class="text-4xl font-bold text-amber-400">🛒 Nákupy</h2><button onclick="showSection('stravovaniSubmenu')" class="bg-white/10 px-4 py-2 rounded-full">Zpět</button></div>
+            <div class="glass p-6">
+                <div class="flex gap-2 mb-6">
+                    <input type="text" id="shopInput" placeholder="Co chybí?" class="w-full rounded-xl px-4 py-3">
+                    <button onclick="addShopItem()" class="bg-amber-600 px-6 rounded-xl font-bold">PŘIDAT</button>
+                </div>
+                <div id="shopList" class="grid gap-2"></div>
+            </div>
+        </div>
+
+        <!-- Napady -->
+        <div id="napady" class="w-full max-w-2xl section-content">
+            <div class="flex justify-between items-center mb-8"><h2 class="text-3xl font-bold">💡 Nápady</h2><button onclick="showSection('mainDashboard')" class="bg-white/10 px-4 py-2 rounded-full">Zpět</button></div>
+            <div id="notesList" class="grid gap-4 mb-6"></div>
+            <div class="flex gap-2">
+                <input type="text" id="noteInput" placeholder="Tvůj nápad..." class="w-full rounded-xl px-4 py-3">
+                <button onclick="addNote()" class="bg-sky-600 px-6 rounded-xl font-bold">PŘIDAT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REAL-TIME DATA SYNC (FIREBASE v10) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+
+        // ==========================================
+        // 1. SEM VLOŽ SVŮJ CONFIG Z FIREBASE CONSOLE:
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "SEM_VLOZ_SVOJE_API_KEY",
+            authDomain: "SEM_VLOZ_AUTH_DOMAIN",
+            projectId: "SEM_VLOZ_PROJECT_ID",
+            storageBucket: "SEM_VLOZ_STORAGE_BUCKET",
+            messagingSenderId: "SEM_VLOZ_MESSAGING_SENDER_ID",
+            appId: "SEM_VLOZ_APP_ID"
+        };
+
+        // Základní prázdná struktura databáze
+        let dataStore = {
+            itiRouteTransit: [], itiRouteOnSite: [], itiFerry: [],
+            accRoute: [], accCamp1: [], accCamp2: [], jidelnicek: [],
+            shop: [], notes: [], auto1: [], auto2: [], auto3: [],
+            duties1: [{id: 1, text: "Dálniční známka", done: false}, {id: 2, text: "Pojištění", done: false}, {id: 3, text: "Technická prohlídka", done: false}],
+            duties2: [{id: 4, text: "Dálniční známka", done: false}, {id: 5, text: "Pojištění", done: false}, {id: 6, text: "Technická prohlídka", done: false}],
+            duties3: [{id: 7, text: "Dálniční známka", done: false}, {id: 8, text: "Pojištění", done: false}, {id: 9, text: "Technická prohlídka", done: false}]
+        };
+
+        let db = null;
+        let currentSection = 'mainDashboard';
+
+        // Inicializace Firebase pouze pokud je vložen platný config
+        if (firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("SEM_VLOZ")) {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+
+            // Reálný čas: onSnapshot poslouchá změny z databáze
+            onSnapshot(doc(db, "korsika2026", "globalData"), (docSnap) => {
+                if (docSnap.exists()) {
+                    dataStore = docSnap.data();
+                    refreshUI();
+                } else {
+                    // Pokud je DB prázdná, vytvoříme výchozí kalendář jídla a nahrajeme do DB
+                    generateInitialFood();
+                    saveData();
+                }
+            });
+        } else {
+            console.warn("Aplikace běží v lokálním demo režimu. Pro synchronizaci vyplň firebaseConfig.");
+            window.addEventListener('DOMContentLoaded', () => {
+                generateInitialFood();
+                refreshUI();
+            });
+        }
+
+        function generateInitialFood() {
+            if(dataStore.jidelnicek.length === 0) {
+                const start = new Date(2026, 6, 18);
+                for(let i=0; i<16; i++) {
+                    const d = new Date(start);
+                    d.setDate(start.getDate() + i);
+                    dataStore.jidelnicek.push({
+                        id: Date.now() + i,
+                        date: d.toISOString().split('T')[0],
+                        place: i === 0 ? "Odjezd (Kvasiny)" : (i === 15 ? "Dojezd (Kvasiny)" : "Plánování jídla"),
+                        author: "Mentor", note: ""
+                    });
+                }
+            }
+        }
+
+        async function saveData() {
+            if (db) {
+                await setDoc(doc(db, "korsika2026", "globalData"), dataStore);
+            } else {
+                refreshUI();
+            }
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+            const homeBtn = document.getElementById('homeBtn');
+            currentSection = id;
+
+            if (id === 'mainDashboard') {
+                homeBtn.classList.add('hidden');
+                document.getElementById('mainDashboard').classList.add('active');
+            } else {
+                homeBtn.classList.remove('hidden');
+                const genericIds = ['itiRouteTransit', 'itiRouteOnSite', 'itiFerry', 'accRoute', 'accCamp1', 'accCamp2', 'jidelnicek'];
+                if (genericIds.includes(id)) {
+                    setupGenericView(id);
+                    document.getElementById('generalListView').classList.add('active');
+                } else if (['auto1', 'auto2', 'auto3'].includes(id)) {
+                    document.getElementById('carDetailView').classList.add('active');
+                    document.getElementById('carDetailView').dataset.currentAuto = id;
+                    document.getElementById('carTitle').innerText = id.toUpperCase().replace('AUTO', 'AUTO ');
+                } else {
+                    document.getElementById(id).classList.add('active');
+                }
+            }
+            refreshUI();
+        }
+
+        function refreshUI() {
+            const id = currentSection;
+            const genericIds = ['itiRouteTransit', 'itiRouteOnSite', 'itiFerry', 'accRoute', 'accCamp1', 'accCamp2', 'jidelnicek'];
+            
+            if (genericIds.includes(id)) {
+                renderGenericList(id);
+            } else if (['auto1', 'auto2', 'auto3'].includes(id)) {
+                renderPassengers();
+                renderDuties();
+            } else if (id === 'napady') {
+                renderNotes();
+            } else if (id === 'nakupy') {
+                renderShop();
+            }
+        }
+
+        function setupGenericView(type) {
+            const titles = {
+                itiRouteTransit: ["🛣️ Trasa: Tam a zpět", "itiRouteSubmenu"],
+                itiRouteOnSite: ["⛰️ Trasa: Na místě", "itiRouteSubmenu"],
+                itiFerry: ["🚢 Trajekty", "itiSubmenu"],
+                accRoute: ["🏨 Ubytování: Na trase", "ubytovaniSubmenu"],
+                accCamp1: ["🏖️ Kemp 1", "accCampSubmenu"],
+                accCamp2: ["🌲 Kemp 2", "accCampSubmenu"],
+                jidelnicek: ["🍕 Jídelní lístek", "stravovaniSubmenu"]
+            };
+            document.getElementById('viewTitle').innerText = titles[type][0];
+            document.getElementById('backBtn').onclick = () => showSection(titles[type][1]);
+            document.getElementById('generalListView').dataset.type = type;
+        }
+
+        function toggleForm() { 
+            const form = document.getElementById('mainForm');
+            form.classList.toggle('hidden'); 
+            if (form.classList.contains('hidden')) form.reset();
+            document.getElementById('editId').value = ''; 
+        }
+        
+        function saveItem() {
+            const type = document.getElementById('generalListView').dataset.type;
+            const id = document.getElementById('editId').value;
+            const newItem = {
+                id: id ? parseInt(id) : Date.now(),
+                date: document.getElementById('formDate').value,
+                place: document.getElementById('formPlace').value,
+                gps: document.getElementById('formGPS').value,
+                web: document.getElementById('formWeb').value,
+                author: document.getElementById('formAuthor').value,
+                note: document.getElementById('formNote').value
+            };
+            if(id) {
+                const idx = dataStore[type].findIndex(x => x.id == id);
+                if (idx !== -1) dataStore[type][idx] = newItem;
+            } else {
+                dataStore[type].push(newItem);
+            }
+            dataStore[type].sort((a,b) => new Date(a.date) - new Date(b.date));
+            saveData();
+            document.getElementById('mainForm').reset();
+            document.getElementById('mainForm').classList.add('hidden');
+        }
+
+        function renderGenericList(type) {
+            const el = document.getElementById('mainList');
+            if (!el) return;
+            el.innerHTML = '';
+            dataStore[type].forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = "glass p-6 flex flex-col md:flex-row gap-4 justify-between items-start";
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold">#${idx+1}</span>
+                            <span class="text-sky-400 font-bold">${item.date || 'Bez data'}</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">${item.place || 'Bez názvu'}</h3>
+                        <p class="text-sm opacity-60 italic mt-1">Autor: ${item.author || 'Neznámý'}</p>
+                        ${item.note ? `<p class="mt-3 text-sm bg-black/20 p-3 rounded-xl whitespace-pre-wrap border border-white/5">${item.note}</p>` : ''}
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            ${item.gps ? `<a href="https://mapy.cz/zakladni?q=${encodeURIComponent(item.gps)}" target="_blank" class="bg-emerald-600 px-4 py-2 rounded-lg text-xs font-bold">📍 MAPY</a>` : ''}
+                            ${item.web ? `<a href="${item.web}" target="_blank" class="bg-sky-600 px-4 py-2 rounded-lg text-xs font-bold">🌐 WEB/BOOKING</a>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editGenericItem('${type}', ${item.id})" class="p-3 bg-white/10 rounded-xl">✏️</button>
+                        <button onclick="deleteGenericItem('${type}', ${item.id})" class="p-3 bg-rose-500/20 rounded-xl text-rose-400">✕</button>
+                    </div>
+                `;
+                el.appendChild(card);
+            });
+        }
+
+        function deleteGenericItem(type, id) { 
+            dataStore[type] = dataStore[type].filter(x => x.id != id); 
+            saveData(); 
+        }
+        
+        function editGenericItem(type, id) {
+            const item = dataStore[type].find(x => x.id == id);
+            if (!item) return;
+            document.getElementById('editId').value = item.id;
+            document.getElementById('formDate').value = item.date;
+            document.getElementById('formPlace').value = item.place;
+            document.getElementById('formGPS').value = item.gps;
+            document.getElementById('formWeb').value = item.web;
+            document.getElementById('formAuthor').value = item.author;
+            document.getElementById('formNote').value = item.note;
+            document.getElementById('mainForm').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function addPassenger() {
+            const input = document.getElementById('passengerInput');
+            const autoId = document.getElementById('carDetailView').dataset.currentAuto;
+            if(!input.value) return;
+            dataStore[autoId].push({ id: Date.now(), name: input.value, done: false });
+            input.value = ''; 
+            saveData();
+        }
+        
+        function deletePassenger(autoId, id) { dataStore[autoId] = dataStore[autoId].filter(p => p.id != id); saveData(); }
+        function togglePassenger(autoId, id) { const p = dataStore[autoId].find(x => x.id == id); if(p) p.done = !p.done; saveData(); }
+        
+        function renderPassengers() {
+            const autoId = document.getElementById('carDetailView').dataset.currentAuto;
+            const el = document.getElementById('passengerList');
+            if (!el || !autoId) return;
+            el.innerHTML = '';
+            dataStore[autoId].forEach(p => {
+                const d = document.createElement('div');
+                d.className = `glass-card p-4 flex justify-between items-center rounded-xl ${p.done ? 'opacity-40' : ''}`;
+                d.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" ${p.done ? 'checked' : ''} onchange="togglePassenger('${autoId}', ${p.id})" class="w-5 h-5 accent-rose-500 cursor-pointer">
+                        <span class="${p.done ? 'line-through' : ''} font-bold">${p.name}</span>
+                    </div>
+                    <button onclick="deletePassenger('${autoId}', ${p.id})" class="text-rose-400 p-2">✕</button>
+                `;
+                el.appendChild(d);
+            });
+        }
+
+        function addDuty() {
+            const input = document.getElementById('dutyInput');
+            const autoNum = document.getElementById('carDetailView').dataset.currentAuto.slice(-1);
+            if(!input.value) return;
+            dataStore['duties' + autoNum].push({ id: Date.now(), text: input.value, done: false });
+            input.value = ''; 
+            saveData();
+        }
+        function toggleDuty(num, id) { const d = dataStore['duties'+num].find(x => x.id == id); if(d) d.done = !d.done; saveData(); }
+        function deleteDuty(num, id) { dataStore['duties'+num] = dataStore['duties'+num].filter(x => x.id != id); saveData(); }
+        
+        function renderDuties() {
+            const autoNum = document.getElementById('carDetailView').dataset.currentAuto.slice(-1);
+            const el = document.getElementById('dutyList');
+            if (!el || !autoNum) return;
+            el.innerHTML = '';
+            dataStore['duties' + autoNum].forEach(d => {
+                const div = document.createElement('div');
+                div.className = `flex justify-between items-center p-3 rounded-xl bg-black/20 ${d.done ? 'opacity-40' : ''}`;
+                div.innerHTML = `<div class="flex items-center gap-3"><input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleDuty(${autoNum}, ${d.id})" class="accent-emerald-500 cursor-pointer"> <span class="${d.done ? 'line-through' : ''}">${d.text}</span></div><button onclick="deleteDuty(${autoNum}, ${d.id})" class="text-white/20 p-2">✕</button>`;
+                el.appendChild(div);
+            });
+        }
+
+        function addShopItem() { const input = document.getElementById('shopInput'); if(!input.value) return; dataStore.shop.push({id: Date.now(), text: input.value, done: false}); input.value = ''; saveData(); }
+        function toggleShop(id) { const i = dataStore.shop.find(x => x.id == id); if(i) i.done = !i.done; saveData(); }
+        function renderShop() {
+            const el = document.getElementById('shopList'); if (!el) return; el.innerHTML = '';
+            dataStore.shop.forEach(i => {
+                const d = document.createElement('div'); d.className = `glass-card p-4 flex gap-3 items-center ${i.done ? 'opacity-40' : ''}`;
+                d.innerHTML = `<input type="checkbox" ${i.done ? 'checked' : ''} onchange="toggleShop(${i.id})" class="cursor-pointer"> <span class="${i.done ? 'line-through' : ''}">${i.text}</span>`;
+                el.appendChild(d);
+            });
+        }
+        function addNote() { const input = document.getElementById('noteInput'); if(!input.value) return; dataStore.notes.push({id: Date.now(), text: input.value}); input.value = ''; saveData(); }
+        function renderNotes() {
+            const el = document.getElementById('notesList'); if (!el) return; el.innerHTML = '';
+            dataStore.notes.forEach(n => {
+                const d = document.createElement('div'); d.className = "glass p-4"; d.innerText = n.text; el.appendChild(d);
+            });
+        }
+
+        // Propojení funkcí z ES modulu do globálního okna pro HTML klikátka
+        window.showSection = showSection;
+        window.toggleForm = toggleForm;
+        window.saveItem = saveItem;
+        window.editGenericItem = editGenericItem;
+        window.deleteGenericItem = deleteGenericItem;
+        window.addPassenger = addPassenger;
+        window.deletePassenger = deletePassenger;
+        window.togglePassenger = togglePassenger;
+        window.addDuty = addDuty;
+        window.toggleDuty = toggleDuty;
+        window.deleteDuty = deleteDuty;
+        window.addShopItem = addShopItem;
+        window.toggleShop = toggleShop;
+        window.addNote = addNote;
+    </script>
+</body>
+</html>
