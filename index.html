@@ -34,9 +34,9 @@
 </head>
 <body class="text-slate-100">
     <div id="loginOverlay" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/90 backdrop-blur-xl">
-        <div class="glass p-10 w-full max-w-md text-center border-sky-500/30">
+        <div class="glass p-10 w-full max-w-md text-center border-sky-500/30 shadow-2xl">
             <div class="text-6xl mb-6">🏝️</div>
-            <h2 class="text-3xl font-bold mb-2 text-white">Korsika 2026</h2>
+            <h2 class="text-3xl font-bold mb-2 text-white text-shadow">Korsika 2026</h2>
             <p class="opacity-60 mb-8 text-sm text-slate-300">Zadej heslo pro vstup</p>
             <input type="password" id="pwInput" placeholder="Heslo..." 
                 class="w-full p-4 rounded-2xl mb-4 text-center text-2xl tracking-widest focus:ring-2 focus:ring-sky-500 outline-none transition-all"
@@ -99,11 +99,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <button onclick="showSection('itiRouteSubmenu')" class="glass p-12 flex flex-col items-center group">
                     <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🛣️</div>
-                    <h3 class="text-3xl font-bold">Trasa</h3>
+                    <h3 class="text-3xl font-bold text-center">Trasa</h3>
                 </button>
                 <button onclick="openListView('ferry', '🚢 Trajekty', 'Časy a lístky', 'itiSubmenu')" class="glass p-12 flex flex-col items-center group">
                     <div class="text-7xl mb-6 group-hover:scale-110 transition-transform">🚢</div>
-                    <h3 class="text-3xl font-bold">Trajekty</h3>
+                    <h3 class="text-3xl font-bold text-center">Trajekty</h3>
                 </button>
             </div>
         </div>
@@ -169,30 +169,29 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <button onclick="openCarDetail('auto1', '🏎️ AUTO 1')" class="glass p-10 flex flex-col items-center group">
                     <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🏎️</div>
-                    <h3 class="text-2xl font-bold">AUTO 1</h3>
+                    <h3 class="text-2xl font-bold text-center">AUTO 1</h3>
                 </button>
                 <button onclick="openCarDetail('auto2', '🚙 AUTO 2')" class="glass p-10 flex flex-col items-center group">
                     <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🚙</div>
-                    <h3 class="text-2xl font-bold">AUTO 2</h3>
+                    <h3 class="text-2xl font-bold text-center">AUTO 2</h3>
                 </button>
                 <button onclick="openCarDetail('auto3', '🚐 AUTO 3')" class="glass p-10 flex flex-col items-center group">
                     <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🚐</div>
-                    <h3 class="text-2xl font-bold">AUTO 3</h3>
+                    <h3 class="text-2xl font-bold text-center">AUTO 3</h3>
                 </button>
             </div>
         </div>
 
-        <!-- General List View -->
         <div id="generalListView" class="w-full max-w-5xl section-content">
-            <div class="flex justify-between items-center mb-8">
-                <div><h2 id="viewTitle" class="text-4xl font-bold">Sekce</h2><p id="viewSubtitle" class="opacity-60">Položky</p></div>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                <div><h2 id="viewTitle" class="text-4xl font-bold">Sekce</h2><p id="viewSubtitle" class="opacity-60 text-center md:text-left">Položky</p></div>
                 <div class="flex gap-2">
-                    <button onclick="toggleForm()" class="bg-white/20 px-6 py-3 rounded-full font-bold">+ Přidat</button>
-                    <button id="backBtn" class="bg-white/10 px-6 py-3 rounded-full">Zpět</button>
+                    <button onclick="toggleForm()" class="bg-white/20 px-6 py-3 rounded-full font-bold hover:bg-white/30 transition-all">+ Přidat</button>
+                    <button id="backBtn" class="bg-white/10 px-6 py-3 rounded-full hover:bg-white/20 transition-all">Zpět</button>
                 </div>
             </div>
 
-            <form id="mainForm" class="hidden glass p-6 mb-8" onsubmit="event.preventDefault(); saveItem();">
+            <form id="mainForm" class="hidden glass p-6 mb-8 border-sky-500/30" onsubmit="event.preventDefault(); saveItem();">
                 <input type="hidden" id="editId">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <input type="date" id="formDate" class="p-3 rounded-xl">
@@ -203,7 +202,7 @@
                     <input type="text" id="formAuthor" placeholder="Tvé jméno" class="p-3 rounded-xl">
                     <textarea id="formNote" placeholder="Poznámky..." class="p-3 rounded-xl md:col-span-3 min-h-[80px]"></textarea>
                     <div class="md:col-span-3 flex gap-3">
-                        <button type="submit" class="flex-1 bg-sky-500 p-3 rounded-xl font-bold">Uložit</button>
+                        <button type="submit" class="flex-1 bg-sky-500 p-3 rounded-xl font-bold shadow-lg">Uložit</button>
                         <button type="button" onclick="toggleForm()" class="px-6 bg-white/10 rounded-xl">Zrušit</button>
                     </div>
                 </div>
@@ -211,13 +210,11 @@
             <div id="mainList" class="grid gap-4"></div>
         </div>
 
-        <!-- Car Detail View -->
         <div id="carDetailView" class="w-full max-w-2xl section-content">
             <div class="flex justify-between items-center mb-8">
                 <h2 id="carTitle" class="text-4xl font-bold text-rose-400">AUTO 1</h2>
                 <button onclick="showSection('carsSubmenu')" class="bg-white/10 px-6 py-3 rounded-full">Zpět</button>
             </div>
-            
             <div class="glass p-6 mb-6">
                 <h3 class="text-xl font-bold mb-4">👥 Pasažéři</h3>
                 <div class="flex gap-2 mb-4">
@@ -226,18 +223,16 @@
                 </div>
                 <div id="passengerList" class="grid gap-2"></div>
             </div>
-
             <div class="glass p-6">
                 <h3 class="text-xl font-bold mb-4">📋 Povinnosti</h3>
                 <div class="flex gap-2 mb-4">
                     <input type="text" id="dutyInput" placeholder="Povinnost..." class="w-full rounded-xl px-4 py-2 text-sm">
                     <button onclick="addDuty()" class="bg-white/20 px-6 rounded-xl font-bold text-sm">PŘIDAT</button>
                 </div>
-                <div id="dutyList" class="grid gap-2 text-sm"></div>
+                <div id="dutyList" class="grid gap-2"></div>
             </div>
         </div>
 
-        <!-- Nákupy -->
         <div id="nakupy" class="w-full max-w-2xl section-content">
             <div class="flex justify-between items-center mb-8"><h2 class="text-4xl font-bold text-amber-400">🛒 Nákupy</h2><button onclick="showSection('stravovaniSubmenu')" class="bg-white/10 px-4 py-2 rounded-full">Zpět</button></div>
             <div class="glass p-6">
@@ -249,7 +244,6 @@
             </div>
         </div>
 
-        <!-- Nápady -->
         <div id="napady" class="w-full max-w-2xl section-content">
             <div class="flex justify-between items-center mb-8"><h2 class="text-3xl font-bold text-white">💡 Nápady</h2><button onclick="showSection('mainDashboard')" class="bg-white/10 px-4 py-2 rounded-full">Zpět</button></div>
             <div id="notesList" class="grid gap-4 mb-6"></div>
@@ -265,7 +259,8 @@
         let currentBackId = '';
         let currentAuto = '';
 
-        const dataStore = {
+        // Hlavní datové úložiště
+        let dataStore = {
             routeTransit: [], routeOnSite: [], ferry: [],
             accRoute: [], accCamp1: [], accCamp2: [],
             food: [], shop: [], notes: [],
@@ -274,72 +269,75 @@
             auto3: { passengers: [], duties: [{id: 1, text: 'Dálniční známka', done: false}, {id: 2, text: 'Pojištění', done: false}, {id: 3, text: 'Technická', done: false}] }
         };
 
-        window.onload = function() {
-            // Automatické zaměření na heslo pro pohodlí
-            const pwInput = document.getElementById('pwInput');
-            if (pwInput) pwInput.focus();
+        function persistData() {
+            localStorage.setItem('korsika_data_2026', JSON.stringify(dataStore));
+        }
 
-            if (localStorage.getItem('korsika_auth') === 'true') {
-                document.getElementById('loginOverlay').classList.add('hidden');
+        function loadStoredData() {
+            const saved = localStorage.getItem('korsika_data_2026');
+            if (saved) {
+                dataStore = JSON.parse(saved);
+            } else {
+                // Vygenerování kalendáře jídel pro první spuštění
+                const start = new Date('2026-07-18');
+                for(let i=0; i<16; i++){
+                    const d = new Date(start); d.setDate(start.getDate() + i);
+                    dataStore.food.push({
+                        id: Date.now() + i,
+                        date: d.toISOString().split('T')[0],
+                        place: i === 0 ? 'Odjezd z Kvasin' : (i === 15 ? 'Dojezd do Kvasin' : 'Plánování jídla'),
+                        note: '', author: 'Systém'
+                    });
+                }
+                persistData();
             }
-            // Generate Food Calendar 18.7. - 2.8.
-            const start = new Date('2026-07-18');
-            for(let i=0; i<16; i++){
-                const d = new Date(start); d.setDate(start.getDate() + i);
-                dataStore.food.push({
-                    id: Date.now() + i,
-                    date: d.toISOString().split('T')[0],
-                    place: i === 0 ? 'Odjezd z Kvasin' : (i === 15 ? 'Dojezd do Kvasin' : 'Plánování jídla'),
-                    note: '', author: 'Systém'
-                });
-            }
-        };
+        }
 
         function checkPassword() {
-            const input = document.getElementById('pwInput').value;
-            if (input === '2026') {
-                localStorage.setItem('korsika_auth', 'true');
+            const pw = document.getElementById('pwInput').value;
+            if (pw === '2026') {
                 document.getElementById('loginOverlay').classList.add('hidden');
+                localStorage.setItem('korsika_auth', 'true');
             } else {
-                document.getElementById('loginError').classList.remove('hidden');
-                document.getElementById('pwInput').value = '';
+                const err = document.getElementById('loginError');
+                err.classList.remove('hidden');
+                setTimeout(() => err.classList.add('hidden'), 2000);
             }
         }
 
         function showSection(id) {
             document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(id);
-            if(target) {
-                target.classList.add('active');
-                window.scrollTo(0,0);
-            }
-            const hb = document.getElementById('homeBtn');
-            if(id === 'mainDashboard') hb.classList.add('hidden');
-            else hb.classList.remove('hidden');
+            if(target) target.classList.add('active');
+            
+            const homeBtn = document.getElementById('homeBtn');
+            if (id === 'mainDashboard') homeBtn.classList.add('hidden');
+            else homeBtn.classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Specifické vykreslování
+            if (id === 'nakupy') renderShop();
+            if (id === 'napady') renderNotes();
         }
 
-        function openListView(view, title, sub, back) {
-            currentView = view;
-            currentBackId = back;
+        function openListView(viewId, title, subtitle, backId) {
+            currentView = viewId;
+            currentBackId = backId;
             document.getElementById('viewTitle').innerText = title;
-            document.getElementById('viewSubtitle').innerText = sub;
-            document.getElementById('backBtn').onclick = () => showSection(back);
+            document.getElementById('viewSubtitle').innerText = subtitle;
+            document.getElementById('backBtn').onclick = () => showSection(backId);
             renderList();
             showSection('generalListView');
         }
 
-        function openCarDetail(autoId, title) {
-            currentAuto = autoId;
-            document.getElementById('carTitle').innerText = title;
-            renderPassengers();
-            renderDuties();
-            showSection('carDetailView');
-        }
-
         function toggleForm() {
-            const f = document.getElementById('mainForm');
-            f.classList.toggle('hidden');
-            if(f.classList.contains('hidden')) f.reset();
+            const form = document.getElementById('mainForm');
+            form.classList.toggle('hidden');
+            if(form.classList.contains('hidden')) {
+                document.getElementById('mainForm').reset();
+                document.getElementById('editId').value = '';
+            }
         }
 
         function saveItem() {
@@ -357,67 +355,80 @@
 
             if(id) {
                 const idx = dataStore[currentView].findIndex(x => x.id == id);
-                dataStore[currentView][idx] = newItem;
+                if(idx !== -1) dataStore[currentView][idx] = newItem;
             } else {
                 dataStore[currentView].push(newItem);
             }
             
+            dataStore[currentView].sort((a, b) => new Date(a.date) - new Date(b.date));
+            persistData();
             toggleForm();
+            renderList();
+        }
+
+        function editItem(id) {
+            const item = dataStore[currentView].find(x => x.id == id);
+            if(!item) return;
+            document.getElementById('editId').value = item.id;
+            document.getElementById('formDate').value = item.date;
+            document.getElementById('formPlace').value = item.place;
+            document.getElementById('formGPS').value = item.gps || '';
+            document.getElementById('formWeb').value = item.web || '';
+            document.getElementById('formBooking').value = item.booking || '';
+            document.getElementById('formAuthor').value = item.author || '';
+            document.getElementById('formNote').value = item.note || '';
+            if(document.getElementById('mainForm').classList.contains('hidden')) toggleForm();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteItem(id) {
+            dataStore[currentView] = dataStore[currentView].filter(x => x.id != id);
+            persistData();
             renderList();
         }
 
         function renderList() {
             const el = document.getElementById('mainList');
             el.innerHTML = '';
-            const list = dataStore[currentView].sort((a,b) => new Date(a.date) - new Date(b.date));
-            
+            const list = dataStore[currentView] || [];
+
             list.forEach((item, idx) => {
-                const d = document.createElement('div');
-                d.className = 'glass-card p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-start';
-                d.innerHTML = `
-                    <div class="bg-sky-500/20 px-4 py-2 rounded-xl text-center min-w-[80px]">
-                        <div class="text-xs uppercase opacity-60">Den</div>
-                        <div class="text-2xl font-bold">${idx + 1}</div>
-                    </div>
+                const dateFmt = item.date ? new Date(item.date).toLocaleDateString('cs-CZ') : 'Bez data';
+                const card = document.createElement('div');
+                card.className = 'glass-card p-6 flex flex-col md:flex-row justify-between gap-6 rounded-3xl';
+                
+                let buttons = '';
+                if(item.gps) buttons += `<a href="https://mapy.cz/zakladni?q=${item.gps}" target="_blank" class="bg-sky-600/40 px-4 py-2 rounded-full text-xs font-bold hover:bg-sky-600 transition-colors">📍 MAPA</a>`;
+                if(item.web) buttons += `<a href="${item.web}" target="_blank" class="bg-white/10 px-4 py-2 rounded-full text-xs font-bold hover:bg-white/20 transition-colors">🌐 WEB</a>`;
+                if(item.booking) buttons += `<a href="${item.booking}" target="_blank" class="bg-blue-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-blue-500 transition-colors italic">🏨 Booking</a>`;
+
+                card.innerHTML = `
                     <div class="flex-1">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-2xl font-bold text-sky-400">${item.place || 'Bez názvu'}</h3>
-                            <div class="flex gap-2">
-                                <button onclick="editItem(${item.id})" class="p-2 opacity-50 hover:opacity-100">✏️</button>
-                                <button onclick="deleteItem(${item.id})" class="p-2 opacity-50 hover:opacity-100">✕</button>
-                            </div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="bg-sky-500/20 text-sky-400 px-3 py-1 rounded-full text-sm font-bold">#${idx+1}</span>
+                            <span class="opacity-60 text-sm">${dateFmt}</span>
                         </div>
-                        <p class="text-sm opacity-60 mb-4">${item.date ? new Date(item.date).toLocaleDateString('cs-CZ') : 'Datum neurčeno'}</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            ${item.gps ? `<a href="https://mapy.cz/zakladni?q=${item.gps}" target="_blank" class="bg-white/10 px-4 py-2 rounded-full text-xs font-bold">📍 Mapy.cz</a>` : ''}
-                            ${item.web ? `<a href="${item.web}" target="_blank" class="bg-white/10 px-4 py-2 rounded-full text-xs font-bold">🌐 Web</a>` : ''}
-                            ${item.booking ? `<a href="${item.booking}" target="_blank" class="bg-sky-600 px-4 py-2 rounded-full text-xs font-bold">🏨 Booking</a>` : ''}
-                        </div>
-                        <div class="text-sm whitespace-pre-line mb-4 opacity-80">${item.note}</div>
-                        <div class="text-[10px] uppercase tracking-widest opacity-40">Vložil: ${item.author || 'Anonym'}</div>
+                        <h4 class="text-xl font-bold mb-2">${item.place}</h4>
+                        <p class="text-sm opacity-80 whitespace-pre-wrap mb-4">${item.note}</p>
+                        <div class="flex flex-wrap gap-2">${buttons}</div>
+                    </div>
+                    <div class="flex md:flex-col justify-end gap-2 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
+                        <span class="text-[10px] uppercase tracking-widest opacity-40 mb-2 hidden md:block">Akce</span>
+                        <button onclick="editItem(${item.id})" class="p-2 hover:bg-white/10 rounded-lg text-sky-400">✏️</button>
+                        <button onclick="deleteItem(${item.id})" class="p-2 hover:bg-white/10 rounded-lg text-rose-400">✕</button>
+                        <div class="ml-auto md:ml-0 md:mt-auto text-[10px] opacity-40 italic">vložil: ${item.author || 'M'}</div>
                     </div>
                 `;
-                el.appendChild(d);
+                el.appendChild(card);
             });
         }
 
-        function editItem(id) {
-            const item = dataStore[currentView].find(x => x.id == id);
-            document.getElementById('editId').value = item.id;
-            document.getElementById('formDate').value = item.date;
-            document.getElementById('formPlace').value = item.place;
-            document.getElementById('formGPS').value = item.gps;
-            document.getElementById('formWeb').value = item.web;
-            document.getElementById('formBooking').value = item.booking;
-            document.getElementById('formAuthor').value = item.author;
-            document.getElementById('formNote').value = item.note;
-            if(document.getElementById('mainForm').classList.contains('hidden')) toggleForm();
-            window.scrollTo(0,0);
-        }
-
-        function deleteItem(id) {
-            dataStore[currentView] = dataStore[currentView].filter(x => x.id != id);
-            renderList();
+        function openCarDetail(id, title) {
+            currentAuto = id;
+            document.getElementById('carTitle').innerText = title;
+            renderPassengers();
+            renderDuties();
+            showSection('carDetailView');
         }
 
         function addPassenger() {
@@ -425,7 +436,21 @@
             if(!input.value) return;
             dataStore[currentAuto].passengers.push({ id: Date.now(), name: input.value, done: false });
             input.value = '';
+            persistData();
             renderPassengers();
+        }
+
+        function toggleP(id) { 
+            const p = dataStore[currentAuto].passengers.find(x=>x.id==id); 
+            if(p) p.done = !p.done; 
+            persistData(); 
+            renderPassengers(); 
+        }
+
+        function delP(id) { 
+            dataStore[currentAuto].passengers = dataStore[currentAuto].passengers.filter(x=>x.id!=id); 
+            persistData(); 
+            renderPassengers(); 
         }
 
         function renderPassengers() {
@@ -436,7 +461,7 @@
                 d.className = `glass-card p-4 flex justify-between items-center rounded-xl ${p.done ? 'opacity-40' : ''}`;
                 d.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" ${p.done ? 'checked' : ''} onchange="toggleP(${p.id})" class="w-5 h-5 accent-rose-500">
+                        <input type="checkbox" ${p.done ? 'checked' : ''} onclick="toggleP(${p.id})" class="w-5 h-5 accent-rose-500">
                         <span class="font-bold ${p.done ? 'line-through' : ''}">${p.name}</span>
                     </div>
                     <button onclick="delP(${p.id})" class="text-rose-400 p-2">✕</button>
@@ -444,14 +469,26 @@
                 el.appendChild(d);
             });
         }
-        function toggleP(id) { const p = dataStore[currentAuto].passengers.find(x=>x.id==id); p.done = !p.done; renderPassengers(); }
-        function delP(id) { dataStore[currentAuto].passengers = dataStore[currentAuto].passengers.filter(x=>x.id!=id); renderPassengers(); }
 
         function addDuty() {
             const input = document.getElementById('dutyInput');
             if(!input.value) return;
             dataStore[currentAuto].duties.push({ id: Date.now(), text: input.value, done: false });
             input.value = '';
+            persistData();
+            renderDuties();
+        }
+
+        function toggleD(id) {
+            const d = dataStore[currentAuto].duties.find(x=>x.id==id);
+            if(d) d.done = !d.done;
+            persistData();
+            renderDuties();
+        }
+
+        function delD(id) {
+            dataStore[currentAuto].duties = dataStore[currentAuto].duties.filter(x=>x.id!=id);
+            persistData();
             renderDuties();
         }
 
@@ -460,68 +497,73 @@
             el.innerHTML = '';
             dataStore[currentAuto].duties.forEach(d => {
                 const div = document.createElement('div');
-                div.className = `p-3 glass-card flex justify-between items-center rounded-lg ${d.done ? 'opacity-40' : ''}`;
+                div.className = `p-3 mb-2 rounded-xl border border-white/5 flex justify-between items-center ${d.done ? 'bg-emerald-500/10 opacity-50' : 'bg-white/5'}`;
                 div.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" ${d.done ? 'checked' : ''} onchange="toggleD(${d.id})" class="w-4 h-4 accent-slate-400">
-                        <span class="${d.done ? 'line-through' : ''}">${d.text}</span>
+                        <input type="checkbox" ${d.done ? 'checked' : ''} onclick="toggleD(${d.id})" class="accent-emerald-500">
+                        <span class="text-sm ${d.done ? 'line-through' : ''}">${d.text}</span>
                     </div>
-                    <button onclick="delD(${d.id})" class="text-slate-400 text-xs">✕</button>
+                    <button onclick="delD(${d.id})" class="text-white/20 hover:text-rose-400">✕</button>
                 `;
                 el.appendChild(div);
             });
         }
-        function toggleD(id) { const d = dataStore[currentAuto].duties.find(x=>x.id==id); d.done = !d.done; renderDuties(); }
-        function delD(id) { dataStore[currentAuto].duties = dataStore[currentAuto].duties.filter(x=>x.id!=id); renderDuties(); }
 
         function addShopItem() {
             const input = document.getElementById('shopInput');
             if(!input.value) return;
             dataStore.shop.push({ id: Date.now(), text: input.value, done: false });
             input.value = '';
+            persistData();
             renderShop();
         }
+        function toggleS(id) { const s = dataStore.shop.find(x=>x.id==id); if(s) s.done = !s.done; persistData(); renderShop(); }
+        function delS(id) { dataStore.shop = dataStore.shop.filter(x=>x.id!=id); persistData(); renderShop(); }
         function renderShop() {
             const el = document.getElementById('shopList');
             el.innerHTML = '';
             dataStore.shop.forEach(s => {
-                const d = document.createElement('div');
-                d.className = `glass-card p-4 flex justify-between items-center rounded-xl ${s.done ? 'opacity-40' : ''}`;
-                d.innerHTML = `
+                const div = document.createElement('div');
+                div.className = `glass-card p-4 flex justify-between items-center rounded-xl ${s.done ? 'opacity-40' : ''}`;
+                div.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" ${s.done ? 'checked' : ''} onchange="toggleS(${s.id})" class="w-5 h-5 accent-amber-500">
+                        <input type="checkbox" ${s.done ? 'checked' : ''} onclick="toggleS(${s.id})" class="w-5 h-5 accent-amber-500">
                         <span class="${s.done ? 'line-through' : ''}">${s.text}</span>
                     </div>
-                    <button onclick="delS(${s.id})" class="text-amber-400 p-2">✕</button>
+                    <button onclick="delS(${s.id})" class="text-rose-400 p-2">✕</button>
                 `;
-                el.appendChild(d);
+                el.appendChild(div);
             });
         }
-        function toggleS(id) { const s = dataStore.shop.find(x=>x.id==id); s.done = !s.done; renderShop(); }
-        function delS(id) { dataStore.shop = dataStore.shop.filter(x=>x.id!=id); renderShop(); }
 
         function addNote() {
             const input = document.getElementById('noteInput');
             if(!input.value) return;
             dataStore.notes.push({ id: Date.now(), text: input.value });
             input.value = '';
+            persistData();
             renderNotes();
         }
+        function delN(id) { dataStore.notes = dataStore.notes.filter(x=>x.id!=id); persistData(); renderNotes(); }
         function renderNotes() {
             const el = document.getElementById('notesList');
             el.innerHTML = '';
             dataStore.notes.forEach(n => {
-                const d = document.createElement('div');
-                d.className = 'glass-card p-4 flex justify-between items-center rounded-xl';
-                d.innerHTML = `<span>${n.text}</span><button onclick="delN(${n.id})" class="text-white/40">✕</button>`;
-                el.appendChild(d);
+                const div = document.createElement('div');
+                div.className = 'glass-card p-4 rounded-xl flex justify-between items-start gap-4';
+                div.innerHTML = `<p class="flex-1">${n.text}</p><button onclick="delN(${n.id})" class="text-rose-400">✕</button>`;
+                el.appendChild(div);
             });
         }
-        function delN(id) { dataStore.notes = dataStore.notes.filter(x=>x.id!=id); renderNotes(); }
 
-        // Initial render for fixed views
-        setInterval(renderShop, 1000); 
-        setInterval(renderNotes, 1000);
+        window.onload = function() {
+            loadStoredData();
+            const pwInput = document.getElementById('pwInput');
+            if (pwInput) pwInput.focus();
+            if (localStorage.getItem('korsika_auth') === 'true') {
+                document.getElementById('loginOverlay').classList.add('hidden');
+            }
+        };
     </script>
 </body>
 </html>
