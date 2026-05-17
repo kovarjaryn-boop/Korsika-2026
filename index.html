@@ -341,6 +341,31 @@
             }
         }
 
+        // Samoopravná funkce k zajištění kompletní datové struktury
+        function ensureDataStructure() {
+            const listKeys = ['routeTransit', 'routeOnSite', 'ferry', 'accRoute', 'accCamp1', 'accCamp2', 'food', 'shop', 'notes'];
+            listKeys.forEach(key => {
+                if (!dataStore[key]) dataStore[key] = [];
+            });
+
+            const defaultDuties = [
+                { id: 1, text: 'Dálniční známka', done: false },
+                { id: 2, text: 'Pojištění (zelená karta)', done: false },
+                { id: 3, text: 'Technická kontrola', done: false }
+            ];
+
+            ['auto1', 'auto2', 'auto3'].forEach(autoKey => {
+                if (!dataStore[autoKey]) {
+                    dataStore[autoKey] = { passengers: [], duties: JSON.parse(JSON.stringify(defaultDuties)) };
+                } else {
+                    if (!dataStore[autoKey].passengers) dataStore[autoKey].passengers = [];
+                    if (!dataStore[autoKey].duties || dataStore[autoKey].duties.length === 0) {
+                        dataStore[autoKey].duties = JSON.parse(JSON.stringify(defaultDuties));
+                    }
+                }
+            });
+        }
+
         function loadStoredData() {
             if (isCloudActive && db) {
                 db.ref('korsika_data_2026').on('value', (snapshot) => {
@@ -349,8 +374,10 @@
                         dataStore = cloudData;
                     } else {
                         generateDefaultFoodMenu();
-                        persistData();
                     }
+                    ensureDataStructure();
+                    persistData();
+                    
                     // Refreshni rozhraní, pokud jsme v aktivní podsekce
                     if (currentView) renderList();
                     if (currentAuto) openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
@@ -364,9 +391,9 @@
                     dataStore = JSON.parse(saved);
                 } else {
                     generateDefaultFoodMenu();
-                    generateDefaultCarDuties();
-                    persistData();
                 }
+                ensureDataStructure();
+                persistData();
             }
         }
 
@@ -383,18 +410,6 @@
                     author: 'Systém'
                 });
             }
-        }
-
-        function generateDefaultCarDuties() {
-            const defaults = [
-                { id: 1, text: 'Dálniční známka', done: false },
-                { id: 2, text: 'Pojištění (zelená karta)', done: false },
-                { id: 3, text: 'Technická kontrola', done: false }
-            ];
-            ['auto1', 'auto2', 'auto3'].forEach(autoKey => {
-                if (!dataStore[autoKey]) dataStore[autoKey] = { passengers: [], duties: [] };
-                dataStore[autoKey].duties = JSON.parse(JSON.stringify(defaults));
-            });
         }
 
         // --- PŘIHLAŠOVACÍ OKNO ---
@@ -552,6 +567,13 @@
         // --- SEKCE AUTA ---
         function openCarDetail(id, title) {
             currentAuto = id;
+            // Dodatečná pojistka přímo při otevření
+            if (!dataStore[currentAuto]) {
+                dataStore[currentAuto] = { passengers: [], duties: [] };
+            }
+            if (!dataStore[currentAuto].passengers) dataStore[currentAuto].passengers = [];
+            if (!dataStore[currentAuto].duties) dataStore[currentAuto].duties = [];
+
             document.getElementById('carTitle').innerText = title;
             renderPassengers();
             renderDuties();
