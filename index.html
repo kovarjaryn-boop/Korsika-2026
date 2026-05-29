@@ -11,6 +11,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <style>
         body, html {
             height: 100%; margin: 0; font-family: 'Inter', sans-serif;
@@ -61,12 +63,17 @@
 
     <div class="hero-bg"></div>
 
-    <button id="homeBtn" onclick="showSection('mainDashboard')" class="fixed top-6 right-6 z-50 glass p-4 rounded-full hover:bg-white/20 transition-all hidden shadow-lg border border-white/20 group">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white group-hover:scale-110 transition-transform">
-            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-    </button>
+    <div class="fixed top-6 right-6 z-50 flex gap-2">
+        <button id="excelBtn" onclick="exportToExcel()" class="glass px-4 py-3 rounded-full hover:bg-emerald-600/40 transition-all hidden shadow-lg border border-emerald-500/30 flex items-center gap-2 font-semibold text-xs text-emerald-400">
+            📊 EXCEL ZÁLOHA
+        </button>
+        <button id="homeBtn" onclick="showSection('mainDashboard')" class="glass p-3 rounded-full hover:bg-white/20 transition-all hidden shadow-lg border border-white/20 group">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white group-hover:scale-110 transition-transform">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+        </button>
+    </div>
 
     <div class="min-h-screen flex flex-col items-center p-4 md:p-8">
         <div id="mainDashboard" class="w-full max-w-5xl mt-12 md:mt-20 active section-content">
@@ -317,14 +324,13 @@
                         document.getElementById('statusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
                         document.getElementById('statusText').innerText = "☁️ Cloud aktivní (Zabezpečeno)";
                         
-                        // Spustíme načítání z cloudu až po úspěšném ověření tokenu
                         loadStoredData();
                     })
                     .catch((error) => {
                         console.error("Chyba zabezpečení Firebase:", error.message);
                         document.getElementById('statusDot').className = "w-2.5 h-2.5 rounded-full bg-rose-500";
                         document.getElementById('statusText').innerText = "⚠️ Chyba zabezpečení";
-                        loadStoredData(); // Pád do offline režimu
+                        loadStoredData();
                     });
             } else {
                 loadStoredData();
@@ -379,14 +385,12 @@
                     }
                     ensureDataStructure();
                     
-                    // Refresh rozhraní podle aktuální sekce
                     if (currentView) renderList();
                     if (currentAuto) openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
                     renderShop();
                     renderNotes();
                 });
             } else {
-                // Lokální uložení (offline)
                 const saved = localStorage.getItem('korsika_data_2026');
                 if (saved) {
                     dataStore = JSON.parse(saved);
@@ -429,7 +433,6 @@
             }
         }
 
-        // Kontrola automatického přihlášení
         if(localStorage.getItem('korsika_auth') === 'true') {
             document.getElementById('loginOverlay').classList.add('hidden');
         }
@@ -444,14 +447,24 @@
             if (id !== 'carDetailView') currentAuto = '';
 
             const homeBtn = document.getElementById('homeBtn');
-            if (id === 'mainDashboard') homeBtn.classList.add('hidden');
-            else homeBtn.classList.remove('hidden');
+            const excelBtn = document.getElementById('excelBtn');
+            
+            if (id === 'mainDashboard') {
+                homeBtn.classList.add('hidden');
+                excelBtn.classList.remove('hidden'); // Excel tlačítko chceme vidět na hlavní ploše
+            } else {
+                homeBtn.classList.remove('hidden');
+                excelBtn.classList.add('hidden');
+            }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if (id === 'nakupy') renderShop();
             if (id === 'napady') renderNotes();
         }
+
+        // Spustíme zobrazení pro hlavní plochu při prvním načtení, aby se ukázalo excel tlačítko
+        setTimeout(() => { if(localStorage.getItem('korsika_auth') === 'true') showSection('mainDashboard'); }, 100);
 
         function openListView(viewId, title, subtitle, backId) {
             currentView = viewId;
@@ -470,7 +483,7 @@
             showSection('generalListView');
         }
 
-        // --- UNIVERZÁLNÍ FORMULÁŘ (TRASY, UBYTOVÁNÍ, JÍDLO) ---
+        // --- UNIVERZÁLNÍ FORMULÁŘ ---
         function toggleForm() {
             const form = document.getElementById('mainForm');
             form.classList.toggle('hidden');
@@ -570,7 +583,7 @@
             });
         }
 
-        // --- LOGIKA PRO SEKCE AUTA ---
+        // --- SEKCE AUTA ---
         function openCarDetail(autoKey, title) {
             currentAuto = autoKey;
             document.getElementById('carTitle').innerText = title;
@@ -667,7 +680,6 @@
             renderShop();
         }
 
-        // Speciální oprava pro okamžitou změnu stavu checkboxu bez čekání na cloud u lokálního kliku
         function toggleShopItem(idx) {
             dataStore.shop[idx].done = !dataStore.shop[idx].done;
             persistData();
@@ -710,6 +722,97 @@
             dataStore.notes.splice(idx, 1);
             persistData();
             renderNotes();
+        }
+
+        // --- KOUZELNÁ FUNKCE: EXPORT DO EXCELU ---
+        function exportToExcel() {
+            try {
+                const wb = XLSX.utils.book_new();
+
+                // 1. Úvodní informační list
+                const infoData = [
+                    { "Projekt": "Korsika 2026", "Popis": "Záloha expedičního dashboardu" },
+                    { "Projekt": "Datum exportu", "Popis": new Date().toLocaleString('cs-CZ') },
+                    { "Projekt": "Režim synchronizace", "Popis": isCloudActive ? "Firebase Cloud" : "Lokální úložiště" }
+                ];
+                const wsInfo = XLSX.utils.json_to_sheet(infoData);
+                XLSX.utils.book_append_sheet(wb, wsInfo, 'Přehled zálohy');
+
+                // Pomocník pro konverzi standardních sekcí
+                function parseSection(key) {
+                    return (dataStore[key] || []).map((item, idx) => ({
+                        "Číslo": idx + 1,
+                        "Datum": item.date ? new Date(item.date).toLocaleDateString('cs-CZ') : "Bez data",
+                        "Místo / Název": item.place || "",
+                        "Poznámka / Popis": item.note || "",
+                        "GPS souřadnice": item.gps || "",
+                        "Odkaz (Web)": item.web || "",
+                        "Booking odkaz": item.booking || "",
+                        "Zapsal": item.author || ""
+                    }));
+                }
+
+                // Přidání standardních listů (pokud obsahují data, prázdné vynecháme)
+                const sections = [
+                    { key: 'routeTransit', name: 'Trasa - Pevnina' },
+                    { key: 'routeOnSite', name: 'Trasa - Ostrov' },
+                    { key: 'ferry', name: 'Trajekty' },
+                    { key: 'accRoute', name: 'Ubytování - Trasa' },
+                    { key: 'accCamp1', name: 'Ubytování - Kemp 1' },
+                    { key: 'accCamp2', name: 'Ubytování - Kemp 2' },
+                    { key: 'food', name: 'Jídelní lístek' }
+                ];
+
+                sections.forEach(sec => {
+                    const clean = parseSection(sec.key);
+                    if (clean.length > 0) {
+                        const ws = XLSX.utils.json_to_sheet(clean);
+                        XLSX.utils.book_append_sheet(wb, ws, sec.name);
+                    }
+                });
+
+                // List: Nákupy
+                if (dataStore.shop && dataStore.shop.length > 0) {
+                    const shopClean = dataStore.shop.map(item => ({
+                        "Položka k nákupu": item.text,
+                        "Stav (Koupeno)": item.done ? "ANO" : "NE"
+                    }));
+                    const wsShop = XLSX.utils.json_to_sheet(shopClean);
+                    XLSX.utils.book_append_sheet(wb, wsShop, 'Nákupní seznam');
+                }
+
+                // List: Nápady
+                if (dataStore.notes && dataStore.notes.length > 0) {
+                    const notesClean = dataStore.notes.map(note => ({ "Zapsaný nápad / Poznámka": note }));
+                    const wsNotes = XLSX.utils.json_to_sheet(notesClean);
+                    XLSX.utils.book_append_sheet(wb, wsNotes, 'Nápady a tipy');
+                }
+
+                // List: Společný přehled Aut, posádek a úkolů
+                const carsClean = [];
+                ['auto1', 'auto2', 'auto3'].forEach((autoKey, idx) => {
+                    const carName = `Auto ${idx + 1}`;
+                    const car = dataStore[autoKey];
+                    if (car) {
+                        car.passengers.forEach(p => {
+                            carsClean.push({ "Vozidlo": carName, "Kategorie": "Pasažér", "Název / Úkol": p, "Hotovo": "-" });
+                        });
+                        car.duties.forEach(d => {
+                            carsClean.push({ "Vozidlo": carName, "Kategorie": "Povinná výbava / Úkol", "Název / Úkol": d.text, "Hotovo": d.done ? "ANO" : "NE" });
+                        });
+                    }
+                });
+                if (carsClean.length > 0) {
+                    const wsCars = XLSX.utils.json_to_sheet(carsClean);
+                    XLSX.utils.book_append_sheet(wb, wsCars, 'Auta a posádky');
+                }
+
+                // Generování a stažení souboru
+                const fileDate = new Date().toISOString().split('T')[0];
+                XLSX.writeFile(wb, `Korsika_2026_Zaloha_${fileDate}.xlsx`);
+            } catch (err) {
+                alert("Nepodařilo se vygenerovat Excel: " + err.message);
+            }
         }
     </script>
 </body>
