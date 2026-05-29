@@ -7,9 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK v9 Compat verze (vhodné pro klasické skripty v jednom HTML) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
     <style>
         body, html {
@@ -38,7 +38,6 @@
     </style>
 </head>
 <body class="text-slate-100">
-    <!-- Cloud Status Bar -->
     <div id="cloudStatus" class="fixed top-6 left-6 z-50 glass px-4 py-2 text-xs font-semibold flex items-center gap-2 select-none">
         <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" id="statusDot"></span>
         <span id="statusText">💾 Lokální režim (offline)</span>
@@ -76,31 +75,26 @@
                 <p class="text-xl opacity-70 font-light tracking-widest uppercase">Podklady pro cestu</p>
             </header>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Vše k přepravě -->
                 <button onclick="showSection('itiSubmenu')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-sky-500/20">
                     <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">📅</div>
                     <h3 class="text-2xl font-bold text-sky-400">Vše k přepravě</h3>
                     <p class="text-sm opacity-60 mt-2">18.7. – 2.8.2026</p>
                 </button>
-                <!-- Ubytování -->
                 <button onclick="showSection('ubytovaniSubmenu')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-emerald-500/20">
                     <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🏠</div>
                     <h3 class="text-2xl font-bold text-emerald-400">Ubytování</h3>
                     <p class="text-sm opacity-60 mt-2">Na trase & Kempy</p>
                 </button>
-                <!-- Stravování -->
                 <button onclick="showSection('stravovaniSubmenu')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-amber-500/20">
                     <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🍽️</div>
                     <h3 class="text-2xl font-bold text-amber-400">Stravování</h3>
                     <p class="text-sm opacity-60 mt-2">Jídlo & Nákupy</p>
                 </button>
-                <!-- Auta -->
                 <button onclick="showSection('carsSubmenu')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-rose-500/20">
                     <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">🚗</div>
                     <h3 class="text-2xl font-bold text-rose-400">AUTA</h3>
                     <p class="text-sm opacity-60 mt-2">Posádky a povinnosti</p>
                 </button>
-                <!-- Nápady -->
                 <button onclick="showSection('napady')" class="glass p-8 flex flex-col items-center justify-center text-center group h-64 border-white/10 lg:col-span-2">
                     <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">💡</div>
                     <h3 class="text-2xl font-bold text-white">Nápady & Poznámky</h3>
@@ -109,7 +103,6 @@
             </div>
         </div>
 
-        <!-- Submenus: Přeprava -->
         <div id="itiSubmenu" class="w-full max-w-4xl section-content">
             <div class="text-center mb-10"><h2 class="text-4xl font-bold text-sky-400">📅 Vše k přepravě</h2><p class="opacity-60">18. 7. – 2. 8. 2026</p></div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -138,7 +131,6 @@
             </div>
         </div>
 
-        <!-- Submenus: Ubytování -->
         <div id="ubytovaniSubmenu" class="w-full max-w-4xl section-content">
             <div class="text-center mb-10"><h2 class="text-4xl font-bold text-emerald-400">🏠 Ubytování</h2></div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -167,7 +159,6 @@
             </div>
         </div>
 
-        <!-- Submenus: Stravování -->
         <div id="stravovaniSubmenu" class="w-full max-w-4xl section-content">
             <div class="text-center mb-10"><h2 class="text-4xl font-bold text-amber-400">🍽️ Stravování</h2></div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -182,7 +173,6 @@
             </div>
         </div>
 
-        <!-- Submenus: Auta -->
         <div id="carsSubmenu" class="w-full max-w-4xl section-content">
             <div class="text-center mb-10"><h2 class="text-4xl font-bold text-rose-400">🚗 Výběr auta</h2></div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -201,7 +191,6 @@
             </div>
         </div>
 
-        <!-- Univerzální List View pro data -->
         <div id="generalListView" class="w-full max-w-5xl section-content">
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
                 <div><h2 id="viewTitle" class="text-4xl font-bold">Sekce</h2><p id="viewSubtitle" class="opacity-60 text-center md:text-left">Položky</p></div>
@@ -230,14 +219,12 @@
             <div id="mainList" class="grid gap-4"></div>
         </div>
 
-        <!-- Detaily aut (Pasažéři & Povinnosti) -->
         <div id="carDetailView" class="w-full max-w-3xl section-content">
             <div class="flex justify-between items-center mb-8">
                 <h2 id="carTitle" class="text-4xl font-bold text-rose-400">AUTO 1</h2>
                 <button onclick="showSection('carsSubmenu')" class="bg-white/10 px-6 py-3 rounded-full">Zpět</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Pasažéři -->
                 <div class="glass p-6">
                     <h3 class="text-xl font-bold mb-4">👥 Pasažéři (Check-in)</h3>
                     <div class="flex gap-2 mb-4">
@@ -246,7 +233,6 @@
                     </div>
                     <div id="passengerList" class="grid gap-2"></div>
                 </div>
-                <!-- Povinnosti aut -->
                 <div class="glass p-6">
                     <h3 class="text-xl font-bold mb-4">📋 Povinnosti & Výbava</h3>
                     <div class="flex gap-2 mb-4">
@@ -258,7 +244,6 @@
             </div>
         </div>
 
-        <!-- Nákupní seznam -->
         <div id="nakupy" class="w-full max-w-2xl section-content">
             <div class="flex justify-between items-center mb-8"><h2 class="text-4xl font-bold text-amber-400">🛒 Nákupy</h2><button onclick="showSection('stravovaniSubmenu')" class="bg-white/10 px-4 py-2 rounded-full">Zpět</button></div>
             <div class="glass p-6">
@@ -270,7 +255,6 @@
             </div>
         </div>
 
-        <!-- Nápady & Poznámky -->
         <div id="napady" class="w-full max-w-2xl section-content">
             <div class="flex justify-between items-center mb-8"><h2 class="text-3xl font-bold text-white">💡 Nápady</h2><button onclick="showSection('mainDashboard')" class="bg-white/10 px-4 py-2 rounded-full">Zpět</button></div>
             <div id="notesList" class="grid gap-4 mb-6"></div>
@@ -287,13 +271,13 @@
         // =====================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyAIDpqOdXMqUvikixy4T14AxJ6MpVu4erI",
-  authDomain: "korsika-2026.firebaseapp.com",
-  databaseURL: "https://korsika-2026-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "korsika-2026",
-  storageBucket: "korsika-2026.firebasestorage.app",
-  messagingSenderId: "411111321223",
-  appId: "1:411111321223:web:94eccdba7ce0365ca69222"
-};
+            authDomain: "korsika-2026.firebaseapp.com",
+            databaseURL: "https://korsika-2026-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "korsika-2026",
+            storageBucket: "korsika-2026.firebasestorage.app",
+            messagingSenderId: "411111321223",
+            appId: "1:411111321223:web:94eccdba7ce0365ca69222"
+        };
         // =====================================================================
 
         let db = null;
@@ -319,17 +303,35 @@
         let currentBackId = '';
         let currentAuto = '';
 
-        // Pokus o inicializaci cloudu Firebase
+        // Pokus o inicializaci cloudu Firebase s anonymním přihlášením
         try {
             if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "SEM_VLOŽ_API_KEY") {
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.database();
-                isCloudActive = true;
-                document.getElementById('statusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
-                document.getElementById('statusText').innerText = "☁️ Cloud aktivní";
+
+                // --- AKTIVACE ANONYMNÍHO PŘIHLÁŠENÍ ---
+                firebase.auth().signInAnonymously()
+                    .then(() => {
+                        console.log("Zabezpečené připojení k Firebase proběhlo úspěšně.");
+                        isCloudActive = true;
+                        document.getElementById('statusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                        document.getElementById('statusText').innerText = "☁️ Cloud aktivní (Zabezpečeno)";
+                        
+                        // Spustíme načítání z cloudu až po úspěšném ověření tokenu
+                        loadStoredData();
+                    })
+                    .catch((error) => {
+                        console.error("Chyba zabezpečení Firebase:", error.message);
+                        document.getElementById('statusDot').className = "w-2.5 h-2.5 rounded-full bg-rose-500";
+                        document.getElementById('statusText').innerText = "⚠️ Chyba zabezpečení";
+                        loadStoredData(); // Pád do offline režimu
+                    });
+            } else {
+                loadStoredData();
             }
         } catch (e) {
             console.error("Chyba při inicializaci Firebase:", e);
+            loadStoredData();
         }
 
         // --- SYNCHRONIZACE / UKLÁDÁNÍ DAT ---
@@ -376,16 +378,15 @@
                         generateDefaultFoodMenu();
                     }
                     ensureDataStructure();
-                    persistData();
                     
-                    // Refreshni rozhraní, pokud jsme v aktivní podsekce
+                    // Refresh rozhraní podle aktuální sekce
                     if (currentView) renderList();
                     if (currentAuto) openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
                     renderShop();
                     renderNotes();
                 });
             } else {
-                // Lokální uložení
+                // Lokální uložení (offline)
                 const saved = localStorage.getItem('korsika_data_2026');
                 if (saved) {
                     dataStore = JSON.parse(saved);
@@ -393,7 +394,10 @@
                     generateDefaultFoodMenu();
                 }
                 ensureDataStructure();
-                persistData();
+                if (currentView) renderList();
+                if (currentAuto) openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
+                renderShop();
+                renderNotes();
             }
         }
 
@@ -405,7 +409,7 @@
                 dataStore.food.push({
                     id: Date.now() + i,
                     date: d.toISOString().split('T')[0],
-                    place: i === 0 ? 'Odjezd z Kvasin' : (i === 15 ? 'Dojezd do Kvasin' : 'Plánování jídla'),
+                    place: i === 0 ? 'Odjezd z pevniny / Cesta' : (i === 15 ? 'Dojezd domů' : 'Plánování jídla na ostrově'),
                     note: '', 
                     author: 'Systém'
                 });
@@ -425,13 +429,17 @@
             }
         }
 
+        // Kontrola automatického přihlášení
+        if(localStorage.getItem('korsika_auth') === 'true') {
+            document.getElementById('loginOverlay').classList.add('hidden');
+        }
+
         // --- NAVIGACE ---
         function showSection(id) {
             document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(id);
             if(target) target.classList.add('active');
             
-            // Nastavení stavu pro odškrtávání / rendering
             if (id !== 'generalListView') currentView = '';
             if (id !== 'carDetailView') currentAuto = '';
 
@@ -452,7 +460,6 @@
             document.getElementById('viewSubtitle').innerText = subtitle;
             document.getElementById('backBtn').onclick = () => showSection(backId);
             
-            // Pro jídlo schováme datumové pole
             if(viewId === 'food') {
                 document.getElementById('addBtn').classList.add('hidden');
             } else {
@@ -463,7 +470,7 @@
             showSection('generalListView');
         }
 
-        // --- FORMULÁŘ ---
+        // --- UNIVERZÁLNÍ FORMULÁŘ (TRASY, UBYTOVÁNÍ, JÍDLO) ---
         function toggleForm() {
             const form = document.getElementById('mainForm');
             form.classList.toggle('hidden');
@@ -495,7 +502,6 @@
                 dataStore[currentView].push(newItem);
             }
             
-            // Seřadit podle data (kromě jídel, ty jsou statické)
             if(currentView !== 'food') {
                 dataStore[currentView].sort((a, b) => new Date(a.date) - new Date(b.date));
             }
@@ -564,164 +570,147 @@
             });
         }
 
-        // --- SEKCE AUTA ---
-        function openCarDetail(id, title) {
-            currentAuto = id;
-            // Dodatečná pojistka přímo při otevření
-            if (!dataStore[currentAuto]) {
-                dataStore[currentAuto] = { passengers: [], duties: [] };
-            }
-            if (!dataStore[currentAuto].passengers) dataStore[currentAuto].passengers = [];
-            if (!dataStore[currentAuto].duties) dataStore[currentAuto].duties = [];
-
+        // --- LOGIKA PRO SEKCE AUTA ---
+        function openCarDetail(autoKey, title) {
+            currentAuto = autoKey;
             document.getElementById('carTitle').innerText = title;
-            renderPassengers();
-            renderDuties();
+            
+            const pList = document.getElementById('passengerList');
+            pList.innerHTML = '';
+            dataStore[autoKey].passengers.forEach((p, idx) => {
+                const d = document.createElement('div');
+                d.className = 'flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5';
+                d.innerHTML = `<span>${p}</span><button onclick="deletePassenger(${idx})" class="text-rose-400 font-bold hover:text-rose-300 px-2">✕</button>`;
+                pList.appendChild(d);
+            });
+
+            const dList = document.getElementById('dutyList');
+            dList.innerHTML = '';
+            dataStore[autoKey].duties.forEach((d, idx) => {
+                const div = document.createElement('div');
+                div.className = `flex justify-between items-center p-3 rounded-xl border transition-all ${d.done ? 'bg-emerald-500/10 border-emerald-500/30 line-through opacity-60' : 'bg-white/5 border-white/5'}`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-3 cursor-pointer flex-1 select-none" onclick="toggleDuty(${idx})">
+                        <input type="checkbox" ${d.done ? 'checked' : ''} class="w-4 h-4 rounded accent-emerald-500">
+                        <span class="text-sm">${d.text}</span>
+                    </div>
+                    <button onclick="deleteDuty(${idx})" class="text-rose-400/50 hover:text-rose-400 px-2">✕</button>
+                `;
+                dList.appendChild(div);
+            });
+
             showSection('carDetailView');
         }
 
         function addPassenger() {
             const input = document.getElementById('passengerInput');
-            if(!input.value) return;
-            if(!dataStore[currentAuto].passengers) dataStore[currentAuto].passengers = [];
-            dataStore[currentAuto].passengers.push({ id: Date.now(), name: input.value, done: false });
+            if(!input.value.trim()) return;
+            dataStore[currentAuto].passengers.push(input.value.trim());
             input.value = '';
             persistData();
-            renderPassengers();
+            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
 
-        function toggleP(id) { 
-            const p = dataStore[currentAuto].passengers.find(x => x.id == id); 
-            if(p) p.done = !p.done; 
-            persistData(); 
-            renderPassengers(); 
-        }
-
-        function delP(id) { 
-            dataStore[currentAuto].passengers = dataStore[currentAuto].passengers.filter(x => x.id != id); 
-            persistData(); 
-            renderPassengers(); 
-        }
-
-        function renderPassengers() {
-            const el = document.getElementById('passengerList');
-            el.innerHTML = '';
-            const list = dataStore[currentAuto].passengers || [];
-            list.forEach(p => {
-                const d = document.createElement('div');
-                d.className = `glass-card p-4 flex justify-between items-center rounded-xl ${p.done ? 'opacity-40' : ''}`;
-                d.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" ${p.done ? 'checked' : ''} onclick="toggleP(${p.id})" class="w-5 h-5 accent-rose-500 cursor-pointer">
-                        <span class="font-bold ${p.done ? 'line-through' : ''}">${p.name}</span>
-                    </div>
-                    <button onclick="delP(${p.id})" class="text-rose-400 p-2">✕</button>
-                `;
-                el.appendChild(d);
-            });
+        function deletePassenger(idx) {
+            dataStore[currentAuto].passengers.splice(idx, 1);
+            persistData();
+            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
 
         function addDuty() {
             const input = document.getElementById('dutyInput');
-            if(!input.value) return;
-            if(!dataStore[currentAuto].duties) dataStore[currentAuto].duties = [];
-            dataStore[currentAuto].duties.push({ id: Date.now(), text: input.value, done: false });
+            if(!input.value.trim()) return;
+            dataStore[currentAuto].duties.push({ id: Date.now(), text: input.value.trim(), done: false });
             input.value = '';
             persistData();
-            renderDuties();
+            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
 
-        function toggleD(id) {
-            const d = dataStore[currentAuto].duties.find(x => x.id == id);
-            if(d) d.done = !d.done;
+        function toggleDuty(idx) {
+            dataStore[currentAuto].duties[idx].done = !dataStore[currentAuto].duties[idx].done;
             persistData();
-            renderDuties();
+            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
 
-        function delD(id) {
-            dataStore[currentAuto].duties = dataStore[currentAuto].duties.filter(x => x.id != id);
+        function deleteDuty(idx) {
+            dataStore[currentAuto].duties.splice(idx, 1);
             persistData();
-            renderDuties();
+            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
 
-        function renderDuties() {
-            const el = document.getElementById('dutyList');
-            el.innerHTML = '';
-            const list = dataStore[currentAuto].duties || [];
-            list.forEach(d => {
-                const div = document.createElement('div');
-                div.className = `p-3 mb-2 rounded-xl border border-white/5 flex justify-between items-center ${d.done ? 'bg-emerald-500/10 opacity-50' : 'bg-white/5'}`;
-                div.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" ${d.done ? 'checked' : ''} onclick="toggleD(${d.id})" class="accent-emerald-500 cursor-pointer">
-                        <span class="text-sm ${d.done ? 'line-through text-white/40' : ''}">${d.text}</span>
-                    </div>
-                    <button onclick="delD(${d.id})" class="text-white/20 hover:text-rose-400">✕</button>
-                `;
-                el.appendChild(div);
-            });
-        }
-
-        // --- NÁKUPY ---
-        function addShopItem() {
-            const input = document.getElementById('shopInput');
-            if(!input.value) return;
-            dataStore.shop.push({ id: Date.now(), text: input.value, done: false });
-            input.value = '';
-            persistData();
-            renderShop();
-        }
-        function toggleS(id) { const s = dataStore.shop.find(x=>x.id==id); if(s) s.done = !s.done; persistData(); renderShop(); }
-        function delS(id) { dataStore.shop = dataStore.shop.filter(x=>x.id!=id); persistData(); renderShop(); }
+        // --- NÁKUPNÍ SEZNAM ---
         function renderShop() {
             const el = document.getElementById('shopList');
             el.innerHTML = '';
             const list = dataStore.shop || [];
-            list.forEach(s => {
+            list.forEach((item, idx) => {
                 const div = document.createElement('div');
-                div.className = `glass-card p-4 flex justify-between items-center rounded-xl ${s.done ? 'opacity-40' : ''}`;
+                div.className = `flex justify-between items-center p-4 rounded-2xl border transition-all ${item.done ? 'bg-amber-500/10 border-amber-500/30 line-through opacity-50' : 'bg-white/5 border-white/5'}`;
                 div.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" ${s.done ? 'checked' : ''} onclick="toggleS(${s.id})" class="w-5 h-5 accent-amber-500 cursor-pointer">
-                        <span class="${s.done ? 'line-through' : ''}">${s.text}</span>
+                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleShopItem(${idx})">
+                        <input type="checkbox" ${item.done ? 'checked' : ''} class="w-5 h-5 rounded accent-amber-500">
+                        <span class="text-lg">${item.text}</span>
                     </div>
-                    <button onclick="delS(${s.id})" class="text-rose-400 p-2">✕</button>
+                    <button onclick="deleteShopItem(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-3">✕</button>
                 `;
                 el.appendChild(div);
             });
         }
 
-        // --- NÁPADY ---
-        function addNote() {
-            const input = document.getElementById('noteInput');
-            if(!input.value) return;
-            dataStore.notes.push({ id: Date.now(), text: input.value });
+        function addShopItem() {
+            const input = document.getElementById('shopInput');
+            if(!input.value.trim()) return;
+            if(!dataStore.shop) dataStore.shop = [];
+            dataStore.shop.push({ text: input.value.trim(), done: false });
             input.value = '';
             persistData();
-            renderNotes();
+            renderShop();
         }
-        function delN(id) { dataStore.notes = dataStore.notes.filter(x=>x.id!=id); persistData(); renderNotes(); }
+
+        // Speciální oprava pro okamžitou změnu stavu checkboxu bez čekání na cloud u lokálního kliku
+        function toggleShopItem(idx) {
+            dataStore.shop[idx].done = !dataStore.shop[idx].done;
+            persistData();
+            renderShop();
+        }
+
+        function deleteShopItem(idx) {
+            dataStore.shop.splice(idx, 1);
+            persistData();
+            renderShop();
+        }
+
+        // --- NÁPADY & POZNÁMKY ---
         function renderNotes() {
             const el = document.getElementById('notesList');
             el.innerHTML = '';
             const list = dataStore.notes || [];
-            list.forEach(n => {
+            list.forEach((note, idx) => {
                 const div = document.createElement('div');
-                div.className = 'glass-card p-4 rounded-xl flex justify-between items-start gap-4';
-                div.innerHTML = `<p class="flex-1 whitespace-pre-wrap">${n.text}</p><button onclick="delN(${n.id})" class="text-rose-400">✕</button>`;
+                div.className = 'glass p-4 rounded-2xl relative flex justify-between items-start border-white/5 group';
+                div.innerHTML = `
+                    <p class="text-sm md:text-base whitespace-pre-wrap pr-6">${note}</p>
+                    <button onclick="deleteNote(${idx})" class="text-rose-400 opacity-60 hover:opacity-100 font-bold absolute top-3 right-3 text-sm">✕</button>
+                `;
                 el.appendChild(div);
             });
         }
 
-        // --- NAČTENÍ STRÁNKY ---
-        window.onload = function() {
-            loadStoredData();
-            const pwInput = document.getElementById('pwInput');
-            if (pwInput) pwInput.focus();
-            if (localStorage.getItem('korsika_auth') === 'true') {
-                document.getElementById('loginOverlay').classList.add('hidden');
-            }
-        };
+        function addNote() {
+            const input = document.getElementById('noteInput');
+            if(!input.value.trim()) return;
+            if(!dataStore.notes) dataStore.notes = [];
+            dataStore.notes.push(input.value.trim());
+            input.value = '';
+            persistData();
+            renderNotes();
+        }
+
+        function deleteNote(idx) {
+            dataStore.notes.splice(idx, 1);
+            persistData();
+            renderNotes();
+        }
     </script>
 </body>
 </html>
