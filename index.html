@@ -254,9 +254,12 @@
         <div id="nakupy" class="w-full max-w-2xl section-content">
             <div class="flex justify-between items-center mb-8"><h2 class="text-4xl font-bold text-amber-400">🛒 Nákupy</h2><button onclick="showSection('stravovaniSubmenu')" class="bg-white/10 px-4 py-2 rounded-full">Zpět</button></div>
             <div class="glass p-6">
-                <div class="flex gap-2 mb-6">
-                    <input type="text" id="shopInput" placeholder="Co chybí koupit?" class="w-full rounded-xl px-4 py-3">
-                    <button onclick="addShopItem()" class="bg-amber-600 px-6 rounded-xl font-bold">PŘIDAT</button>
+                <div class="flex flex-col gap-3 mb-6">
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <input type="text" id="shopInput" placeholder="Co chybí koupit?" class="w-full md:w-3/5 rounded-xl px-4 py-3">
+                        <input type="text" id="shopLinkInput" placeholder="Odkaz / OneDrive URL (nepovinné)" class="w-full md:w-2/5 rounded-xl px-4 py-2 text-xs">
+                    </div>
+                    <button onclick="addShopItem()" class="w-full bg-amber-600 p-3 rounded-xl font-bold hover:bg-amber-500 transition-colors">PŘIDAT DO SEZNAMU</button>
                 </div>
                 <div id="shopList" class="grid gap-2"></div>
             </div>
@@ -274,7 +277,7 @@
 
     <script>
         // =====================================================================
-        // ☁️ SEM VLOŽ ÚDAJE Z FIREBASE CONSOLE:
+        // ☁️ KONFIGURACE FIREBASE:
         // =====================================================================
         const firebaseConfig = {
             apiKey: "AIzaSyAIDpqOdXMqUvikixy4T14AxJ6MpVu4erI",
@@ -285,49 +288,33 @@
             messagingSenderId: "411111321223",
             appId: "1:411111321223:web:94eccdba7ce0365ca69222"
         };
-        // =====================================================================
 
         let db = null;
         let isCloudActive = false;
 
-        // Naše datové úložiště (výchozí struktura)
         let dataStore = {
-            routeTransit: [], 
-            routeOnSite: [], 
-            ferry: [],
-            accRoute: [], 
-            accCamp1: [], 
-            accCamp2: [],
-            food: [], 
-            shop: [], 
-            notes: [],
+            routeTransit: [], routeOnSite: [], ferry: [],
+            accRoute: [], accCamp1: [], accCamp2: [],
+            food: [], shop: [], notes: [],
             auto1: { passengers: [], duties: [] },
             auto2: { passengers: [], duties: [] },
             auto3: { passengers: [], duties: [] }
         };
 
-        let currentView = '';
-        let currentBackId = '';
-        let currentAuto = '';
+        let currentView = ''; let currentBackId = ''; let currentAuto = '';
 
-        // Pokus o inicializaci cloudu Firebase s anonymním přihlášením
         try {
             if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "SEM_VLOŽ_API_KEY") {
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.database();
-
-                // --- AKTIVACE ANONYMNÍHO PŘIHLÁŠENÍ ---
                 firebase.auth().signInAnonymously()
                     .then(() => {
-                        console.log("Zabezpečené připojení k Firebase proběhlo úspěšně.");
                         isCloudActive = true;
                         document.getElementById('statusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
                         document.getElementById('statusText').innerText = "☁️ Cloud aktivní (Zabezpečeno)";
-                        
                         loadStoredData();
                     })
                     .catch((error) => {
-                        console.error("Chyba zabezpečení Firebase:", error.message);
                         document.getElementById('statusDot').className = "w-2.5 h-2.5 rounded-full bg-rose-500";
                         document.getElementById('statusText').innerText = "⚠️ Chyba zabezpečení";
                         loadStoredData();
@@ -336,11 +323,9 @@
                 loadStoredData();
             }
         } catch (e) {
-            console.error("Chyba při inicializaci Firebase:", e);
             loadStoredData();
         }
 
-        // --- SYNCHRONIZACE / UKLÁDÁNÍ DAT ---
         function persistData() {
             if (isCloudActive && db) {
                 db.ref('korsika_data_2026').set(dataStore);
@@ -349,19 +334,16 @@
             }
         }
 
-        // Samoopravná funkce k zajištění kompletní datové struktury
         function ensureDataStructure() {
             const listKeys = ['routeTransit', 'routeOnSite', 'ferry', 'accRoute', 'accCamp1', 'accCamp2', 'food', 'shop', 'notes'];
             listKeys.forEach(key => {
                 if (!dataStore[key]) dataStore[key] = [];
             });
-
             const defaultDuties = [
                 { id: 1, text: 'Dálniční známka', done: false },
                 { id: 2, text: 'Pojištění (zelená karta)', done: false },
                 { id: 3, text: 'Technická kontrola', done: false }
             ];
-
             ['auto1', 'auto2', 'auto3'].forEach(autoKey => {
                 if (!dataStore[autoKey]) {
                     dataStore[autoKey] = { passengers: [], duties: JSON.parse(JSON.stringify(defaultDuties)) };
@@ -378,13 +360,8 @@
             if (isCloudActive && db) {
                 db.ref('korsika_data_2026').on('value', (snapshot) => {
                     const cloudData = snapshot.val();
-                    if (cloudData) {
-                        dataStore = cloudData;
-                    } else {
-                        generateDefaultFoodMenu();
-                    }
+                    if (cloudData) dataStore = cloudData;
                     ensureDataStructure();
-                    
                     if (currentView) renderList();
                     if (currentAuto) openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
                     renderShop();
@@ -392,11 +369,7 @@
                 });
             } else {
                 const saved = localStorage.getItem('korsika_data_2026');
-                if (saved) {
-                    dataStore = JSON.parse(saved);
-                } else {
-                    generateDefaultFoodMenu();
-                }
+                if (saved) dataStore = JSON.parse(saved);
                 ensureDataStructure();
                 if (currentView) renderList();
                 if (currentAuto) openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
@@ -405,27 +378,12 @@
             }
         }
 
-        function generateDefaultFoodMenu() {
-            dataStore.food = [];
-            const start = new Date('2026-07-18');
-            for(let i=0; i<16; i++){
-                const d = new Date(start); d.setDate(start.getDate() + i);
-                dataStore.food.push({
-                    id: Date.now() + i,
-                    date: d.toISOString().split('T')[0],
-                    place: i === 0 ? 'Odjezd z pevniny / Cesta' : (i === 15 ? 'Dojezd domů' : 'Plánování jídla na ostrově'),
-                    note: '', 
-                    author: 'Systém'
-                });
-            }
-        }
-
-        // --- PŘIHLAŠOVACÍ OKNO ---
         function checkPassword() {
             const pw = document.getElementById('pwInput').value;
             if (pw === '2026') {
                 document.getElementById('loginOverlay').classList.add('hidden');
                 localStorage.setItem('korsika_auth', 'true');
+                showSection('mainDashboard');
             } else {
                 const err = document.getElementById('loginError');
                 err.classList.remove('hidden');
@@ -437,7 +395,6 @@
             document.getElementById('loginOverlay').classList.add('hidden');
         }
 
-        // --- NAVIGACE ---
         function showSection(id) {
             document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(id);
@@ -451,19 +408,17 @@
             
             if (id === 'mainDashboard') {
                 homeBtn.classList.add('hidden');
-                excelBtn.classList.remove('hidden'); // Excel tlačítko chceme vidět na hlavní ploše
+                excelBtn.classList.remove('hidden');
             } else {
                 homeBtn.classList.remove('hidden');
                 excelBtn.classList.add('hidden');
             }
-
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if (id === 'nakupy') renderShop();
             if (id === 'napady') renderNotes();
         }
 
-        // Spustíme zobrazení pro hlavní plochu při prvním načtení, aby se ukázalo excel tlačítko
         setTimeout(() => { if(localStorage.getItem('korsika_auth') === 'true') showSection('mainDashboard'); }, 100);
 
         function openListView(viewId, title, subtitle, backId) {
@@ -472,18 +427,11 @@
             document.getElementById('viewTitle').innerText = title;
             document.getElementById('viewSubtitle').innerText = subtitle;
             document.getElementById('backBtn').onclick = () => showSection(backId);
-            
-            if(viewId === 'food') {
-                document.getElementById('addBtn').classList.add('hidden');
-            } else {
-                document.getElementById('addBtn').classList.remove('hidden');
-            }
-
+            document.getElementById('addBtn').classList.toggle('hidden', viewId === 'food');
             renderList();
             showSection('generalListView');
         }
 
-        // --- UNIVERZÁLNÍ FORMULÁŘ ---
         function toggleForm() {
             const form = document.getElementById('mainForm');
             form.classList.toggle('hidden');
@@ -505,23 +453,15 @@
                 author: document.getElementById('formAuthor').value,
                 note: document.getElementById('formNote').value
             };
-
             if (!dataStore[currentView]) dataStore[currentView] = [];
-
             if(id) {
                 const idx = dataStore[currentView].findIndex(x => x.id == id);
                 if(idx !== -1) dataStore[currentView][idx] = newItem;
             } else {
                 dataStore[currentView].push(newItem);
             }
-            
-            if(currentView !== 'food') {
-                dataStore[currentView].sort((a, b) => new Date(a.date) - new Date(b.date));
-            }
-            
-            persistData();
-            toggleForm();
-            renderList();
+            if(currentView !== 'food') dataStore[currentView].sort((a, b) => new Date(a.date) - new Date(b.date));
+            persistData(); toggleForm(); renderList();
         }
 
         function editItem(id) {
@@ -541,25 +481,20 @@
 
         function deleteItem(id) {
             dataStore[currentView] = dataStore[currentView].filter(x => x.id != id);
-            persistData();
-            renderList();
+            persistData(); renderList();
         }
 
         function renderList() {
-            const el = document.getElementById('mainList');
-            el.innerHTML = '';
+            const el = document.getElementById('mainList'); el.innerHTML = '';
             const list = dataStore[currentView] || [];
-
             list.forEach((item, idx) => {
                 const dateFmt = item.date ? new Date(item.date).toLocaleDateString('cs-CZ') : 'Bez data';
                 const card = document.createElement('div');
                 card.className = 'glass-card p-6 flex flex-col md:flex-row justify-between gap-6 rounded-3xl';
-                
                 let buttons = '';
                 if(item.gps) buttons += `<a href="https://mapy.cz/zakladni?q=${item.gps}" target="_blank" class="bg-sky-600/40 px-4 py-2 rounded-full text-xs font-bold hover:bg-sky-600 transition-colors">📍 MAPA</a>`;
                 if(item.web) buttons += `<a href="${item.web}" target="_blank" class="bg-white/10 px-4 py-2 rounded-full text-xs font-bold hover:bg-white/20 transition-colors">🌐 WEB</a>`;
                 if(item.booking) buttons += `<a href="${item.booking}" target="_blank" class="bg-blue-600 px-4 py-2 rounded-full text-xs font-bold hover:bg-blue-500 transition-colors italic">🏨 Booking</a>`;
-
                 card.innerHTML = `
                     <div class="flex-1">
                         <div class="flex items-center gap-3 mb-2">
@@ -571,7 +506,6 @@
                         <div class="flex flex-wrap gap-2">${buttons}</div>
                     </div>
                     <div class="flex md:flex-col justify-end gap-2 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
-                        <span class="text-[10px] uppercase tracking-widest opacity-40 mb-2 hidden md:block text-right">Akce</span>
                         <div class="flex gap-2 justify-end">
                             <button onclick="editItem(${item.id})" class="p-2 hover:bg-white/10 rounded-lg text-sky-400">✏️ Upravit</button>
                             ${currentView !== 'food' ? `<button onclick="deleteItem(${item.id})" class="p-2 hover:bg-white/10 rounded-lg text-rose-400">✕</button>` : ''}
@@ -585,20 +519,15 @@
 
         // --- SEKCE AUTA ---
         function openCarDetail(autoKey, title) {
-            currentAuto = autoKey;
-            document.getElementById('carTitle').innerText = title;
-            
-            const pList = document.getElementById('passengerList');
-            pList.innerHTML = '';
+            currentAuto = autoKey; document.getElementById('carTitle').innerText = title;
+            const pList = document.getElementById('passengerList'); pList.innerHTML = '';
             dataStore[autoKey].passengers.forEach((p, idx) => {
                 const d = document.createElement('div');
                 d.className = 'flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5';
                 d.innerHTML = `<span>${p}</span><button onclick="deletePassenger(${idx})" class="text-rose-400 font-bold hover:text-rose-300 px-2">✕</button>`;
                 pList.appendChild(d);
             });
-
-            const dList = document.getElementById('dutyList');
-            dList.innerHTML = '';
+            const dList = document.getElementById('dutyList'); dList.innerHTML = '';
             dataStore[autoKey].duties.forEach((d, idx) => {
                 const div = document.createElement('div');
                 div.className = `flex justify-between items-center p-3 rounded-xl border transition-all ${d.done ? 'bg-emerald-500/10 border-emerald-500/30 line-through opacity-60' : 'bg-white/5 border-white/5'}`;
@@ -611,60 +540,60 @@
                 `;
                 dList.appendChild(div);
             });
-
             showSection('carDetailView');
         }
 
         function addPassenger() {
-            const input = document.getElementById('passengerInput');
-            if(!input.value.trim()) return;
-            dataStore[currentAuto].passengers.push(input.value.trim());
-            input.value = '';
-            persistData();
-            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
+            const input = document.getElementById('passengerInput'); if(!input.value.trim()) return;
+            dataStore[currentAuto].passengers.push(input.value.trim()); input.value = '';
+            persistData(); openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
-
         function deletePassenger(idx) {
             dataStore[currentAuto].passengers.splice(idx, 1);
-            persistData();
-            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
+            persistData(); openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
-
         function addDuty() {
-            const input = document.getElementById('dutyInput');
-            if(!input.value.trim()) return;
-            dataStore[currentAuto].duties.push({ id: Date.now(), text: input.value.trim(), done: false });
-            input.value = '';
-            persistData();
-            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
+            const input = document.getElementById('dutyInput'); if(!input.value.trim()) return;
+            dataStore[currentAuto].duties.push({ id: Date.now(), text: input.value.trim(), done: false }); input.value = '';
+            persistData(); openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
-
         function toggleDuty(idx) {
             dataStore[currentAuto].duties[idx].done = !dataStore[currentAuto].duties[idx].done;
-            persistData();
-            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
+            persistData(); openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
-
         function deleteDuty(idx) {
             dataStore[currentAuto].duties.splice(idx, 1);
-            persistData();
-            openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
+            persistData(); openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
 
-        // --- NÁKUPNÍ SEZNAM ---
+        // --- NÁKUPNÍ SEZNAM (Render a Logika s podporou Odkazů) ---
         function renderShop() {
-            const el = document.getElementById('shopList');
-            el.innerHTML = '';
+            const el = document.getElementById('shopList'); el.innerHTML = '';
             const list = dataStore.shop || [];
             list.forEach((item, idx) => {
                 const div = document.createElement('div');
-                div.className = `flex justify-between items-center p-4 rounded-2xl border transition-all ${item.done ? 'bg-amber-500/10 border-amber-500/30 line-through opacity-50' : 'bg-white/5 border-white/5'}`;
+                div.className = `flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 rounded-2xl border gap-3 transition-all ${item.done ? 'bg-amber-500/10 border-amber-500/30 line-through opacity-50' : 'bg-white/5 border-white/5'}`;
+                
+                // Formování odkazu (pokud existuje)
+                let linkBtn = '';
+                if(item.link) {
+                    // Kontrola protokolu, pro případ, že lidi zapomenou zadat https://
+                    let targetUrl = item.link.trim();
+                    if (!/^https?:\/\//i.test(targetUrl)) {
+                        targetUrl = 'https://' + targetUrl;
+                    }
+                    linkBtn = `<a href="${targetUrl}" target="_blank" class="bg-amber-500/20 hover:bg-amber-500/40 text-amber-300 text-xs px-3 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1">🌐 ODKAZ</a>`;
+                }
+
                 div.innerHTML = `
                     <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleShopItem(${idx})">
                         <input type="checkbox" ${item.done ? 'checked' : ''} class="w-5 h-5 rounded accent-amber-500">
-                        <span class="text-lg">${item.text}</span>
+                        <span class="text-base font-semibold">${item.text}</span>
                     </div>
-                    <button onclick="deleteShopItem(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-3">✕</button>
+                    <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                        ${linkBtn}
+                        <button onclick="deleteShopItem(${idx}); event.stopPropagation();" class="text-rose-400 hover:text-rose-300 font-bold px-2">✕</button>
+                    </div>
                 `;
                 el.appendChild(div);
             });
@@ -672,34 +601,39 @@
 
         function addShopItem() {
             const input = document.getElementById('shopInput');
+            const linkInput = document.getElementById('shopLinkInput');
             if(!input.value.trim()) return;
             if(!dataStore.shop) dataStore.shop = [];
-            dataStore.shop.push({ text: input.value.trim(), done: false });
+            
+            dataStore.shop.push({ 
+                text: input.value.trim(), 
+                link: linkInput.value.trim() || null,
+                done: false 
+            });
+            
             input.value = '';
+            linkInput.value = '';
             persistData();
             renderShop();
         }
 
         function toggleShopItem(idx) {
             dataStore.shop[idx].done = !dataStore.shop[idx].done;
-            persistData();
-            renderShop();
+            persistData(); renderShop();
         }
 
         function deleteShopItem(idx) {
             dataStore.shop.splice(idx, 1);
-            persistData();
-            renderShop();
+            persistData(); renderShop();
         }
 
         // --- NÁPADY & POZNÁMKY ---
         function renderNotes() {
-            const el = document.getElementById('notesList');
-            el.innerHTML = '';
+            const el = document.getElementById('notesList'); el.innerHTML = '';
             const list = dataStore.notes || [];
             list.forEach((note, idx) => {
                 const div = document.createElement('div');
-                div.className = 'glass p-4 rounded-2xl relative flex justify-between items-start border-white/5 group';
+                div.className = 'glass p-4 rounded-2xl relative flex justify-between items-start border-white/5';
                 div.innerHTML = `
                     <p class="text-sm md:text-base whitespace-pre-wrap pr-6">${note}</p>
                     <button onclick="deleteNote(${idx})" class="text-rose-400 opacity-60 hover:opacity-100 font-bold absolute top-3 right-3 text-sm">✕</button>
@@ -709,27 +643,19 @@
         }
 
         function addNote() {
-            const input = document.getElementById('noteInput');
-            if(!input.value.trim()) return;
+            const input = document.getElementById('noteInput'); if(!input.value.trim()) return;
             if(!dataStore.notes) dataStore.notes = [];
-            dataStore.notes.push(input.value.trim());
-            input.value = '';
-            persistData();
-            renderNotes();
+            dataStore.notes.push(input.value.trim()); input.value = '';
+            persistData(); renderNotes();
         }
-
         function deleteNote(idx) {
-            dataStore.notes.splice(idx, 1);
-            persistData();
-            renderNotes();
+            dataStore.notes.splice(idx, 1); persistData(); renderNotes();
         }
 
-        // --- KOUZELNÁ FUNKCE: EXPORT DO EXCELU ---
+        // --- EXPORT DO EXCELU (Upraveno, aby se ukládal i odkaz u nákupů) ---
         function exportToExcel() {
             try {
                 const wb = XLSX.utils.book_new();
-
-                // 1. Úvodní informační list
                 const infoData = [
                     { "Projekt": "Korsika 2026", "Popis": "Záloha expedičního dashboardu" },
                     { "Projekt": "Datum exportu", "Popis": new Date().toLocaleString('cs-CZ') },
@@ -738,7 +664,6 @@
                 const wsInfo = XLSX.utils.json_to_sheet(infoData);
                 XLSX.utils.book_append_sheet(wb, wsInfo, 'Přehled zálohy');
 
-                // Pomocník pro konverzi standardních sekcí
                 function parseSection(key) {
                     return (dataStore[key] || []).map((item, idx) => ({
                         "Číslo": idx + 1,
@@ -752,7 +677,6 @@
                     }));
                 }
 
-                // Přidání standardních listů (pokud obsahují data, prázdné vynecháme)
                 const sections = [
                     { key: 'routeTransit', name: 'Trasa - Pevnina' },
                     { key: 'routeOnSite', name: 'Trasa - Ostrov' },
@@ -771,35 +695,28 @@
                     }
                 });
 
-                // List: Nákupy
                 if (dataStore.shop && dataStore.shop.length > 0) {
                     const shopClean = dataStore.shop.map(item => ({
                         "Položka k nákupu": item.text,
+                        "Webový odkaz": item.link || "Bez odkazu",
                         "Stav (Koupeno)": item.done ? "ANO" : "NE"
                     }));
                     const wsShop = XLSX.utils.json_to_sheet(shopClean);
                     XLSX.utils.book_append_sheet(wb, wsShop, 'Nákupní seznam');
                 }
 
-                // List: Nápady
                 if (dataStore.notes && dataStore.notes.length > 0) {
                     const notesClean = dataStore.notes.map(note => ({ "Zapsaný nápad / Poznámka": note }));
                     const wsNotes = XLSX.utils.json_to_sheet(notesClean);
                     XLSX.utils.book_append_sheet(wb, wsNotes, 'Nápady a tipy');
                 }
 
-                // List: Společný přehled Aut, posádek a úkolů
                 const carsClean = [];
                 ['auto1', 'auto2', 'auto3'].forEach((autoKey, idx) => {
-                    const carName = `Auto ${idx + 1}`;
-                    const car = dataStore[autoKey];
+                    const carName = `Auto ${idx + 1}`; const car = dataStore[autoKey];
                     if (car) {
-                        car.passengers.forEach(p => {
-                            carsClean.push({ "Vozidlo": carName, "Kategorie": "Pasažér", "Název / Úkol": p, "Hotovo": "-" });
-                        });
-                        car.duties.forEach(d => {
-                            carsClean.push({ "Vozidlo": carName, "Kategorie": "Povinná výbava / Úkol", "Název / Úkol": d.text, "Hotovo": d.done ? "ANO" : "NE" });
-                        });
+                        car.passengers.forEach(p => { carsClean.push({ "Vozidlo": carName, "Kategorie": "Pasažér", "Název / Úkol": p, "Hotovo": "-" }); });
+                        car.duties.forEach(d => { carsClean.push({ "Vozidlo": carName, "Kategorie": "Povinná výbava / Úkol", "Název / Úkol": d.text, "Hotovo": d.done ? "ANO" : "NE" }); });
                     }
                 });
                 if (carsClean.length > 0) {
@@ -807,7 +724,6 @@
                     XLSX.utils.book_append_sheet(wb, wsCars, 'Auta a posádky');
                 }
 
-                // Generování a stažení souboru
                 const fileDate = new Date().toISOString().split('T')[0];
                 XLSX.writeFile(wb, `Korsika_2026_Zaloha_${fileDate}.xlsx`);
             } catch (err) {
