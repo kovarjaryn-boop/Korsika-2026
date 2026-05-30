@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Korsika 2026 | Společný Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Korsika 2026 | Mentor Dashboard</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap)" rel="stylesheet">
     
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="[https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js](https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js)"></script>
+    <script src="[https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js](https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js)"></script>
+    <script src="[https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js](https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js)"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="[https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js](https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js)"></script>
 
     <style>
         body, html {
@@ -20,7 +20,7 @@
         }
         .hero-bg {
             background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), 
-                        url('https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?q=80&w=2070&auto=format&fit=crop');
+                        url('[https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?q=80&w=2070&auto=format&fit=crop](https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?q=80&w=2070&auto=format&fit=crop)');
             background-size: cover; background-position: center; background-attachment: fixed;
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1;
         }
@@ -68,7 +68,7 @@
             📊 EXCEL ZÁLOHA
         </button>
         <button id="homeBtn" onclick="showSection('mainDashboard')" class="glass p-3 rounded-full hover:bg-white/20 transition-all hidden shadow-lg border border-white/20 group">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white group-hover:scale-110 transition-transform">
+            <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white group-hover:scale-110 transition-transform">
                 <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                 <polyline points="9 22 9 12 15 12 15 22"></polyline>
             </svg>
@@ -185,29 +185,29 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <button onclick="openCarDetail('auto1', '🚙 AUTO Jarda')" class="glass p-4 flex flex-col items-center group overflow-hidden border-rose-500/10">
                     <div class="w-full h-40 rounded-2xl overflow-hidden mb-4 relative">
-                        <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=500&auto=format&fit=crop" 
-                             alt="VW Tiguan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <img src="[https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=500&auto=format&fit=crop)" 
+                             alt="VW Tiguan 2017" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </div>
                     <h3 class="text-2xl font-bold text-center text-white">AUTO Jarda</h3>
-                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">VW Tiguan</p>
+                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">VW Tiguan 2017</p>
                 </button>
 
                 <button onclick="openCarDetail('auto2', '🚙 AUTO Zbyněk')" class="glass p-4 flex flex-col items-center group overflow-hidden border-rose-500/10">
                     <div class="w-full h-40 rounded-2xl overflow-hidden mb-4 relative">
-                        <img src="https://images.unsplash.com/photo-1619767886558-efdc259cde1a?q=80&w=500&auto=format&fit=crop" 
-                             alt="Ford Focus Combi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <img src="[https://images.unsplash.com/photo-1611776993172-132d00139169?q=80&w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1611776993172-132d00139169?q=80&w=500&auto=format&fit=crop)" 
+                             alt="Ford Focus Combi 2010" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </div>
                     <h3 class="text-2xl font-bold text-center text-white">AUTO Zbyněk</h3>
-                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">Ford Focus Combi</p>
+                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">Ford Focus Combi 2010</p>
                 </button>
 
                 <button onclick="openCarDetail('auto3', '🚙 AUTO Pavel')" class="glass p-4 flex flex-col items-center group overflow-hidden border-rose-500/10">
                     <div class="w-full h-40 rounded-2xl overflow-hidden mb-4 relative">
-                        <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=500&auto=format&fit=crop" 
-                             alt="VW Tiguan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <img src="[https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=500&auto=format&fit=crop](https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=500&auto=format&fit=crop)" 
+                             alt="VW Tiguan 2017" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </div>
                     <h3 class="text-2xl font-bold text-center text-white">AUTO Pavel</h3>
-                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">VW Tiguan</p>
+                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">VW Tiguan 2017</p>
                 </button>
             </div>
         </div>
@@ -296,7 +296,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyAIDpqOdXMqUvikixy4T14AxJ6MpVu4erI",
             authDomain: "korsika-2026.firebaseapp.com",
-            databaseURL: "https://korsika-2026-default-rtdb.europe-west1.firebasedatabase.app",
+            databaseURL: "[https://korsika-2026-default-rtdb.europe-west1.firebasedatabase.app](https://korsika-2026-default-rtdb.europe-west1.firebasedatabase.app)",
             projectId: "korsika-2026",
             storageBucket: "korsika-2026.firebasestorage.app",
             messagingSenderId: "411111321223",
@@ -446,7 +446,6 @@
             showSection('generalListView');
         }
 
-        // --- MANIPULACE S POLOŽKAMI ---
         function toggleForm() {
             const form = document.getElementById('mainForm');
             form.classList.toggle('hidden');
@@ -581,7 +580,7 @@
             persistData(); openCarDetail(currentAuto, document.getElementById('carTitle').innerText);
         }
 
-        // --- NÁKUPNÍ SEZNAM ---
+        // --- NÁKUPNÍ SEZNAM (Render a Logika s podporou Odkazů) ---
         function renderShop() {
             const el = document.getElementById('shopList'); el.innerHTML = '';
             const list = dataStore.shop || [];
@@ -589,8 +588,10 @@
                 const div = document.createElement('div');
                 div.className = `flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 rounded-2xl border gap-3 transition-all ${item.done ? 'bg-amber-500/10 border-amber-500/30 line-through opacity-50' : 'bg-white/5 border-white/5'}`;
                 
+                // Formování odkazu (pokud existuje)
                 let linkBtn = '';
                 if(item.link) {
+                    // Kontrola protokolu, pro případ, že lidi zapomenou zadat https://
                     let targetUrl = item.link.trim();
                     if (!/^https?:\/\//i.test(targetUrl)) {
                         targetUrl = 'https://' + targetUrl;
@@ -646,7 +647,7 @@
             const list = dataStore.notes || [];
             list.forEach((note, idx) => {
                 const div = document.createElement('div');
-                div.className = 'glass p-4 rounded-2xl relative flex justify-between items-start border-white/5';
+                div.className = 'glass p-4 rounded-2xl relative flex justify-between items-start border-white/5 group';
                 div.innerHTML = `
                     <p class="text-sm md:text-base whitespace-pre-wrap pr-6">${note}</p>
                     <button onclick="deleteNote(${idx})" class="text-rose-400 opacity-60 hover:opacity-100 font-bold absolute top-3 right-3 text-sm">✕</button>
@@ -665,7 +666,7 @@
             dataStore.notes.splice(idx, 1); persistData(); renderNotes();
         }
 
-        // --- EXPORT DO EXCELU (S PROPISY NOVÝCH JMEN AUT) ---
+        // --- EXPORT DO EXCELU (S JMENY AUT) ---
         function exportToExcel() {
             try {
                 const wb = XLSX.utils.book_new();
@@ -724,17 +725,12 @@
                     XLSX.utils.book_append_sheet(wb, wsNotes, 'Nápady a tipy');
                 }
 
-                // Mapování nových jmen aut do Excelu
-                const carNamesMap = {
-                    auto1: 'AUTO Jarda (Tiguan)',
-                    auto2: 'AUTO Zbyněk (Focus)',
-                    auto3: 'AUTO Pavel (Tiguan)'
-                };
+                // Mapování jmen aut do Excelu
+                const carNamesMap = { auto1: 'AUTO Jarda', auto2: 'AUTO Zbyněk', auto3: 'AUTO Pavel' };
 
                 const carsClean = [];
                 ['auto1', 'auto2', 'auto3'].forEach((autoKey) => {
-                    const carName = carNamesMap[autoKey]; 
-                    const car = dataStore[autoKey];
+                    const carName = carNamesMap[autoKey]; const car = dataStore[autoKey];
                     if (car) {
                         car.passengers.forEach(p => { carsClean.push({ "Vozidlo": carName, "Kategorie": "Pasažér", "Název / Úkol": p, "Hotovo": "-" }); });
                         car.duties.forEach(d => { carsClean.push({ "Vozidlo": carName, "Kategorie": "Povinná výbava / Úkol", "Název / Úkol": d.text, "Hotovo": d.done ? "ANO" : "NE" }); });
