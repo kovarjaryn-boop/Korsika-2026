@@ -641,4 +641,109 @@
 
         // --- NÁPADY & POZNÁMKY ---
         function renderNotes() {
-            const el = document.getElementById('
+            const el = document.getElementById('notesList'); el.innerHTML = '';
+            const list = dataStore.notes || [];
+            list.forEach((note, idx) => {
+                const div = document.createElement('div');
+                div.className = 'glass p-4 rounded-2xl relative flex justify-between items-start border-white/5';
+                div.innerHTML = `
+                    <p class="text-sm md:text-base whitespace-pre-wrap pr-6">${note}</p>
+                    <button onclick="deleteNote(${idx})" class="text-rose-400 opacity-60 hover:opacity-100 font-bold absolute top-3 right-3 text-sm">✕</button>
+                `;
+                el.appendChild(div);
+            });
+        }
+
+        function addNote() {
+            const input = document.getElementById('noteInput'); if(!input.value.trim()) return;
+            if(!dataStore.notes) dataStore.notes = [];
+            dataStore.notes.push(input.value.trim()); input.value = '';
+            persistData(); renderNotes();
+        }
+        function deleteNote(idx) {
+            dataStore.notes.splice(idx, 1); persistData(); renderNotes();
+        }
+
+        // --- EXPORT DO EXCELU ---
+        function exportToExcel() {
+            try {
+                const wb = XLSX.utils.book_new();
+                const infoData = [
+                    { "Projekt": "Korsika 2026", "Popis": "Záloha expedičního dashboardu" },
+                    { "Projekt": "Datum exportu", "Popis": new Date().toLocaleString('cs-CZ') },
+                    { "Projekt": "Režim synchronizace", "Popis": isCloudActive ? "Firebase Cloud" : "Lokální úložiště" }
+                ];
+                const wsInfo = XLSX.utils.json_to_sheet(infoData);
+                XLSX.utils.book_append_sheet(wb, wsInfo, 'Přehled zálohy');
+
+                function parseSection(key) {
+                    return (dataStore[key] || []).map((item, idx) => ({
+                        "Číslo": idx + 1,
+                        "Datum": item.date ? new Date(item.date).toLocaleDateString('cs-CZ') : "Bez data",
+                        "Místo / Název": item.place || "",
+                        "Poznámka / Popis": item.note || "",
+                        "GPS souřadnice": item.gps || "",
+                        "Odkaz (Web)": item.web || "",
+                        "Booking odkaz": item.booking || "",
+                        "Zapsal": item.author || ""
+                    }));
+                }
+
+                const sections = [
+                    { key: 'routeTransit', name: 'Trasa - Pevnina' },
+                    { key: 'routeOnSite', name: 'Trasa - Ostrov' },
+                    { key: 'ferry', name: 'Trajekty' },
+                    { key: 'accRoute', name: 'Ubytování - Trasa' },
+                    { key: 'accCamp1', name: 'Ubytování - Kemp 1' },
+                    { key: 'accCamp2', name: 'Ubytování - Kemp 2' },
+                    { key: 'food', name: 'Jídelní lístek' }
+                ];
+
+                sections.forEach(sec => {
+                    const clean = parseSection(sec.key);
+                    if (clean.length > 0) {
+                        const ws = XLSX.utils.json_to_sheet(clean);
+                        XLSX.utils.book_append_sheet(wb, ws, sec.name);
+                    }
+                });
+
+                if (dataStore.shop && dataStore.shop.length > 0) {
+                    const shopClean = dataStore.shop.map(item => ({
+                        "Položka k nákupu": item.text,
+                        "Webový odkaz": item.link || "Bez odkazu",
+                        "Stav (Koupeno)": item.done ? "ANO" : "NE"
+                    }));
+                    const wsShop = XLSX.utils.json_to_sheet(shopClean);
+                    XLSX.utils.book_append_sheet(wb, wsShop, 'Nákupní seznam');
+                }
+
+                if (dataStore.notes && dataStore.notes.length > 0) {
+                    const notesClean = dataStore.notes.map(note => ({ "Zapsaný nápad / Poznámka": note }));
+                    const wsNotes = XLSX.utils.json_to_sheet(notesClean);
+                    XLSX.utils.book_append_sheet(wb, wsNotes, 'Nápady a tipy');
+                }
+
+                const carNamesMap = { auto1: 'AUTO Jarda', auto2: 'AUTO Zbyněk', auto3: 'AUTO Pavel' };
+
+                const carsClean = [];
+                ['auto1', 'auto2', 'auto3'].forEach((autoKey) => {
+                    const carName = carNamesMap[autoKey]; const car = dataStore[autoKey];
+                    if (car) {
+                        car.passengers.forEach(p => { carsClean.push({ "Vozidlo": carName, "Kategorie": "Pasažér", "Název / Úkol": p, "Hotovo": "-" }); });
+                        car.duties.forEach(d => { carsClean.push({ "Vozidlo": carName, "Kategorie": "Povinná výbava / Úkol", "Název / Úkol": d.text, "Hotovo": d.done ? "ANO" : "NE" }); });
+                    }
+                });
+                if (carsClean.length > 0) {
+                    const wsCars = XLSX.utils.json_to_sheet(carsClean);
+                    XLSX.utils.book_append_sheet(wb, wsCars, 'Auta a posádky');
+                }
+
+                const fileDate = new Date().toISOString().split('T')[0];
+                XLSX.writeFile(wb, `Korsika_2026_Zaloha_${fileDate}.xlsx`);
+            } catch (err) {
+                alert("Nepodařilo se vygenerovat Excel: " + err.message);
+            }
+        }
+    </script>
+</body>
+</html>
