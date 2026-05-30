@@ -183,34 +183,31 @@
         <div id="carsSubmenu" class="w-full max-w-5xl section-content">
             <div class="text-center mb-10"><h2 class="text-4xl font-bold text-rose-400">🚗 Výběr vozidla</h2></div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <button onclick="openCarDetail('auto1', '🚙 AUTO Jarda')" class="glass p-4 flex flex-col items-center group border-rose-500/10">
-                    <div class="w-full h-40 flex items-center justify-center mb-4 relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-auto h-24 text-rose-400 group-hover:scale-110 transition-transform duration-300" fill="currentColor">
-                            <path d="M480 320c0 17.7-14.3 32-32 32s-32-14.3-32-32H96c0 17.7-14.3 32-32 32s-32-14.3-32-32H16v-64c0-17.7 14.3-32 32-32h32L96 112c14.6-25.6 42.1-41.6 71.7-41.6h176.6c29.6 0 57 16 71.7 41.6l16 28h32c17.7 0 32 14.3 32 32v64zM160 224a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm192-32a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM32 400c0 26.5 21.5 48 48 48s48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48zM384 400c0 26.5 21.5 48 48 48s48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48z"/>
-                        </svg>
+                <button onclick="openCarDetail('auto1', '🚙 AUTO Jarda')" class="glass p-4 flex flex-col items-center group overflow-hidden border-rose-500/10">
+                    <div class="w-full h-40 rounded-2xl overflow-hidden mb-4 relative bg-black/20">
+                        <img src="https://images.unsplash.com/photo-1559405553-909f29107c1d?q=80&w=500&auto=format&fit=crop" 
+                             alt="VW Tiguan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </div>
                     <h3 class="text-2xl font-bold text-center text-white">AUTO Jarda</h3>
-                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">SUV</p>
+                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">VW Tiguan</p>
                 </button>
 
-                <button onclick="openCarDetail('auto2', '🚙 AUTO Zbyněk')" class="glass p-4 flex flex-col items-center group border-rose-500/10">
-                    <div class="w-full h-40 flex items-center justify-center mb-4 relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-auto h-24 text-rose-400 group-hover:scale-110 transition-transform duration-300" fill="currentColor">
-                            <path d="M16 192C16 174.3 30.3 160 48 160H96l44.4-66.6C153 74.8 171.7 64 192 64h176c20.3 0 39 10.8 51.6 29.4L464 160h16c17.7 0 32 14.3 32 32v128c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V192zM192 128H48v32h144zm0 64h224V160H192zm272-32H320l-16-28C296.8 116.8 281.2 112 264.4 112H192v16zM64 400c26.5 0 48 21.5 48 48s-21.5 48-48 48s-48-21.5-48-48s21.5-48 48-48zm384 0c26.5 0 48 21.5 48 48s-21.5 48-48 48s-48-21.5-48-48s21.5-48 48-48z"/>
-                        </svg>
+                <button onclick="openCarDetail('auto2', '🚙 AUTO Zbyněk')" class="glass p-4 flex flex-col items-center group overflow-hidden border-rose-500/10">
+                    <div class="w-full h-40 rounded-2xl overflow-hidden mb-4 relative bg-black/20">
+                        <img src="https://images.unsplash.com/photo-1532581140115-3e355d1ed1fd?q=80&w=500&auto=format&fit=crop" 
+                             alt="Ford Focus Combi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </div>
                     <h3 class="text-2xl font-bold text-center text-white">AUTO Zbyněk</h3>
-                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">COMBI</p>
+                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">Ford Focus Combi</p>
                 </button>
 
-                <button onclick="openCarDetail('auto3', '🚙 AUTO Pavel')" class="glass p-4 flex flex-col items-center group border-rose-500/10">
-                    <div class="w-full h-40 flex items-center justify-center mb-4 relative">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-auto h-24 text-rose-400 group-hover:scale-110 transition-transform duration-300" fill="currentColor">
-                            <path d="M480 320c0 17.7-14.3 32-32 32s-32-14.3-32-32H96c0 17.7-14.3 32-32 32s-32-14.3-32-32H16v-64c0-17.7 14.3-32 32-32h32L96 112c14.6-25.6 42.1-41.6 71.7-41.6h176.6c29.6 0 57 16 71.7 41.6l16 28h32c17.7 0 32 14.3 32 32v64zM160 224a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm192-32a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM32 400c0 26.5 21.5 48 48 48s48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48zM384 400c0 26.5 21.5 48 48 48s48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48z"/>
-                        </svg>
+                <button onclick="openCarDetail('auto3', '🚙 AUTO Pavel')" class="glass p-4 flex flex-col items-center group overflow-hidden border-rose-500/10">
+                    <div class="w-full h-40 rounded-2xl overflow-hidden mb-4 relative bg-black/20">
+                        <img src="https://images.unsplash.com/photo-1559405553-909f29107c1d?q=80&w=500&auto=format&fit=crop" 
+                             alt="VW Tiguan" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                     </div>
                     <h3 class="text-2xl font-bold text-center text-white">AUTO Pavel</h3>
-                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">SUV</p>
+                    <p class="text-xs opacity-50 mt-1 tracking-wider uppercase text-rose-400 font-semibold">VW Tiguan</p>
                 </button>
             </div>
         </div>
@@ -449,7 +446,6 @@
             showSection('generalListView');
         }
 
-        // --- MANIPULACE S POLOŽKAMI ---
         function toggleForm() {
             const form = document.getElementById('mainForm');
             form.classList.toggle('hidden');
@@ -668,7 +664,7 @@
             dataStore.notes.splice(idx, 1); persistData(); renderNotes();
         }
 
-        // --- EXPORT DO EXCELU (S JMENY AUT) ---
+        // --- EXPORT DO EXCELU ---
         function exportToExcel() {
             try {
                 const wb = XLSX.utils.book_new();
@@ -727,7 +723,6 @@
                     XLSX.utils.book_append_sheet(wb, wsNotes, 'Nápady a tipy');
                 }
 
-                // Mapování jmen aut do Excelu
                 const carNamesMap = { auto1: 'AUTO Jarda', auto2: 'AUTO Zbyněk', auto3: 'AUTO Pavel' };
 
                 const carsClean = [];
